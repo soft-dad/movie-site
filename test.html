@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品页面</title>
+    <!-- 头部导航 -->
+    <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/mall.css">
+    <link rel="stylesheet" href="./css/common.css">
+    <link rel="stylesheet" href="./css/index.css">
+    <nav class="header">
+        <div class="contain">
+            <!-- logo区 -->
+            <a href="./index.html" class="logo"></a>
+            <!-- 列表 -->
+            <ul>
+                <li><a href="./index.html">首页</a></li>
+                <li class="dropdown">
+                    <a href="./movie.html" class="dropbtn">电影</a>
+                    <div class="dropdown-content">
+                        <a href="category_Action.html">动作片</a>
+                        <a href="category_Comedy.html">喜剧片</a>
+                        <a href="category_Romance.html">爱情片</a>
+                        <a href="category_Sci-fic.html">科幻片</a>
+                    </div>
+                </li>
+                <li><a href="./cinema.html">影院</a></li>
+                <li class="dropdown">
+                    <span class="dropbtn">反馈</span>
+                    <div class="dropdown-content">
+                        <a href="liuyan.html">电话客服</a>
+                        <a href="liuyan.html">系统留言</a>
+                        <a href="liuyan.html">意见反馈</a>
+                        <a href="liuyan.html">关于我们</a>
+                    </div>
+                </li>
+                <li><a href="./mall.html">商城</a></li>
+            </ul>
+            <!-- 用户登入 -->
+            <div class="userinfo">
+                <img src="./img/userifo.png" alt="用户">
+                <a href="./login.html" style="margin-left: 20px;">登录</a>
+            </div>
+            <!-- 搜索区 -->
+            <form action="#" class="serch-form" method="POST">
+                <input type="search" class="search" placeholder="找影视剧 影人 影院">
+                <input type="submit" class="submit" value="">
+            </form>
+            <!-- app下载 -->
+            <div class="appdownload">
+                <a href="#">
+                    <span class="iphone-icon"></span>
+                    <span class="apptext">app下载</span>
+                    <span class="caret"></span>
+                    <div class="downloadicon">
+                        <p class="down-title">扫码下载app</p>
+                        <p class="down-content">选座更优惠</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </nav>
+</head>
+<body>
+<!-- 商家入驻 -->
+<div class="merchant">
+    <a href="#">商家入驻</a>
+</div>
+
+<!-- 商品区域 -->
+<div class="product clearfix">
+    <!-- 这里是你的商品项代码 -->
+    <div class="goods-item">
+        <a href="#">
+            <div class="magnifier-container">
+                <img src="./img/goods2.jpg" alt="哆啦A梦孵化仓盲盒" class="product-img">
+                <div class="magnifier-glass"></div>
+                <div class="magnified-img-container">
+                    <img src="./img/goods2.jpg" alt="哆啦A梦孵化仓盲盒" class="magnified-img" style="display:none;">
+                </div>
+            </div>
+            <p class="product-info">哆啦A梦孵化仓盲盒</p>
+            <p><strong>$199</strong><span>$278</span></p>
+        </a>
+    </div>
+    <!-- 其他商品项... -->
+</div>
+
+<!-- 选择区 -->
+<div class="pager">
+    <!-- 分页代码 -->
+</div>
+</body>
+</html>

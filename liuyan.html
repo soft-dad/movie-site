@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link rel="stylesheet" href="./css/reset.css">
+	<link rel="stylesheet" href="./css/common.css">
+	<link rel="stylesheet" href="./css/index.css"> <!-- 确保导航样式统一 -->
+	<title>反馈</title>
+</head>
+
+<body class="day">
+<!-- 背景音乐播放器 -->
+<audio id="backgroundMusic" loop>
+	<source src="music/background_music.mp3" type="audio/mpeg">
+	您的浏览器不支持音频播放。
+</audio>
+
+<!-- 点击音效播放器（提前加载，确保无延迟） -->
+<audio id="clickSound" preload="auto">
+	<source src="music/click.mp3" type="audio/mpeg">
+	您的浏览器不支持音频播放。
+</audio>
+
+<!-- 音乐控制按钮 -->
+<button id="musicToggle" style="
+    position: fixed; top: 100px; right: 20px; z-index: 1000;
+    padding: 10px; cursor: pointer; background-color: rgba(0,0,0,0.5);
+    color: white; border: none; border-radius: 5px;
+">
+	🔊 播放音乐
+</button>
+
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		const music = document.getElementById('backgroundMusic');
+		const toggleButton = document.getElementById('musicToggle');
+		const clickSound = document.getElementById('clickSound');
+		const SOUND_MIN_DURATION = 200;
+
+		// 简化的音频检查函数
+		function checkAudioAvailability() {
+			// 检查背景音乐
+			if (music.error) {
+				console.error('背景音乐错误:', music.error);
+				toggleButton.textContent = '🔊 音乐文件错误';
+			}
+
+			// 检查点击音效
+			if (clickSound.error) {
+				console.error('点击音效错误:', clickSound.error);
+			}
+		}
+
+		// 播放点击音效的简化版本
+		function playClickSound() {
+			return new Promise(resolve => {
+				// 无论如何都在最短时间后resolve，确保交互不卡顿
+				setTimeout(resolve, SOUND_MIN_DURATION);
+
+				// 尝试播放音效
+				if (clickSound && clickSound.readyState >= 2) {
+					clickSound.currentTime = 0;
+					clickSound.play().catch(e => console.log('音效播放失败:', e));
+				}
+			});
+		}
+
+		// 背景音乐控制
+		toggleButton.addEventListener('click', function() {
+			// 先播放点击音效，再切换背景音乐状态
+			playClickSound().then(() => {
+				if (music.paused) {
+					music.play()
+						.then(() => toggleButton.textContent = '🔇 关闭音乐')
+						.catch(e => {
+							console.log('音乐播放失败:', e);
+							alert('音乐播放失败，请检查文件是否存在');
+						});
+				} else {
+					music.pause();
+					toggleButton.textContent = '🔊 播放音乐';
+				}
+			});
+		});
+
+		// 为所有可点击元素添加音效
+		document.querySelectorAll('a, button, input[type="button"], input[type="submit"]').forEach(element => {
+			// 排除音乐按钮，因为已经单独处理
+			if (element.id !== 'musicToggle') {
+				element.addEventListener('click', function(e) {
+					// 对链接特殊处理，防止立即跳转
+					if (this.tagName === 'A' && this.href && !this.href.includes('#')) {
+						e.preventDefault();
+						const href = this.href;
+						const target = this.target;
+
+						playClickSound().then(() => {
+							if (target === '_blank') {
+								window.open(href, '_blank');
+							} else {
+								window.location.href = href;
+							}
+						});
+					} else {
+						// 普通按钮只播放音效
+						playClickSound();
+					}
+				});
+			}
+		});
+
+		// 初始化下拉菜单（保留原有功能）
+		function initDropdownMenus() {
+			const dropdowns = document.querySelectorAll('.dropdown');
+
+			dropdowns.forEach(dropdown => {
+				const dropbtn = dropdown.querySelector('.dropbtn');
+				const dropdownContent = dropdown.querySelector('.dropdown-content');
+
+				if (dropbtn && dropdownContent) {
+					const dropdownItems = dropdownContent.querySelectorAll('a');
+					dropdownItems.forEach(item => {
+						item.addEventListener('click', function(e) {
+							e.stopPropagation();
+							const href = this.getAttribute('href');
+							playClickSound().then(() => {
+								window.location.href = href;
+							});
+						});
+					});
+
+					if (window.innerWidth < 768) {
+						dropbtn.addEventListener('click', function(e) {
+							e.preventDefault();
+							dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+						});
+					}
+
+					/* 点击音效：排除音乐按钮，避免打断背景音乐 */
+document.addEventListener('mousedown', (e) => {
+  if (e.target.id === 'musicToggle') return;          // ← 排除音乐按钮
+  const clickSound = document.getElementById('clickSound');
+  if (!clickSound) return;
+  clickSound.currentTime = 0;
+  clickSound.play().catch(() => {});
+}, { capture: true });
+					});
+				}
+			});
+		}
+
+		// 搜索按钮处理
+		const searchSubmit = document.querySelector('.serch-form .submit');
+		if (searchSubmit) {
+			searchSubmit.addEventListener('click', function(e) {
+				const input = document.querySelector('.serch-form .search');
+				if (!input.value.trim()) {
+					e.preventDefault();
+					alert('请输入搜索内容');
+				}
+			});
+		}
+
+		// 切换背景按钮处理
+		const changeBgBtn = document.querySelector('#tool .c4');
+		if (changeBgBtn) {
+			changeBgBtn.addEventListener('click', function() {
+				playClickSound().then(() => {
+					if (typeof changeBg === 'function') {
+						changeBg();
+					} else {
+						document.body.classList.toggle('day');
+						document.body.classList.toggle('night');
+					}
+				});
+			});
+		}
+
+		// 初始化
+		checkAudioAvailability();
+		initDropdownMenus();
+	});
+</script>
+
+<!-- 头部导航 -->
+<!-- 头部导航 -->
+<nav class="header">
+	<div class="contain">
+		<!-- logo区 -->
+		<a href="./index.html" class="logo"></a>
+		<!-- 列表 -->
+		<ul>
+			<li><a href="./index.html">首页</a></li>
+			<li class="dropdown">
+				<a href="./movie.html" class="dropbtn">电影</a>
+				<div class="dropdown-content">
+					<a href="category_Action.html">动作片</a>
+					<a href="category_Comedy.html">喜剧片</a>
+					<a href="category_Romance.html">爱情片</a>
+					<a href="category_Sci-fic.html">科幻片</a>
+				</div>
+			</li>
+			<li><a href="./cinema.html">影院</a></li>
+			<li class="dropdown">
+				<a href="./liuyan.html" class="dropbtn">反馈</a>
+				<div class="dropdown-content">
+					<a href="liuyan_tel.html">电话客服</a>
+					<a href="liuyan.html">系统留言</a>
+					<a href="liuyan_feedback.html">意见反馈</a>
+					<a href="liuyan_about.html">关于我们</a>
+				</div>
+			</li>
+			<li><a href="./mall.html">商城</a></li>
+		</ul>
+		<!-- 用户登入 -->
+		<div class="userinfo">
+			<img src="./img/userifo.png" alt="用户">
+			<a href="./login.html" style="margin-left: 20px;">登录</a>
+		</div>
+		<!-- 搜索区 -->
+		<form action="#" class="serch-form" method="POST">
+			<input type="search" class="search" placeholder="找影视剧 影人 影院">
+			<input type="submit" class="submit" value="">
+		</form>
+		<!-- app下载 -->
+		<div class="appdownload">
+			<a href="#">
+				<span class="iphone-icon"></span>
+				<span class="apptext">app下载</span>
+				<span class="caret"></span>
+				<div class="downloadicon">
+					<p class="down-title">扫码下载app</p>
+					<p class="down-content">选座更优惠</p>
+				</div>
+			</a>
+		</div>
+	</div>
+</nav>
+
+<!-- ===== 新版留言板 ===== -->
+<section class="msg-section">
+	<div class="msg-card">
+		<div class="msg-header">
+			<div class="nick-area">
+				<span class="nick-label">昵称</span>
+				<input id="ritian" type="text" value="匿名用户" readonly>
+				<button id="changeNick" class="btn-text">修改</button>
+			</div>
+			<div class="char-circle">
+				<svg width="60" height="60">
+					<circle cx="30" cy="30" r="26" stroke="#e2e2e2" stroke-width="4" fill="none"></circle>
+					<circle id="progress" cx="30" cy="30" r="26" stroke="#042A8F" stroke-width="4" fill="none"
+							stroke-dasharray="163" stroke-dashoffset="163"></circle>
+				</svg>
+				<span id="charPercent" class="circle-text">100%</span>
+			</div>
+		</div>
+
+		<textarea id="messageInput" maxlength="200" placeholder="写下你的留言吧～"></textarea>
+
+		<div class="msg-toolbar">
+			<span class="char-tip">还可输入 <strong id="remainingChars">200</strong> 字</span>
+			<div class="btn-group">
+				<button id="clearBt" class="btn-secondary">清空</button>
+				<button id="postBt" class="btn-primary">发表留言</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- 留言列表 -->
+	<div id="comment" class="comment-list"></div>
+</section>
+
+<!-- 统一底部 -->
+<div class="footer">…</div>
+
+<!-- ===== 新样式 ===== -->
+<style>
+	.msg-section{
+		min-height: 100vh;
+		background: linear-gradient(135deg,#f5f7fa 0%, #c3cfe2 100%);
+		padding: 30px 20px 60px;
+		margin-top: 80px;          /* 避开 fixed 导航 */
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+	.msg-card{
+		width: 100%;
+		max-width: 800px;
+		background: #fff;
+		border-radius: 12px;
+		box-shadow: 0 10px 25px rgba(0,0,0,.08);
+		padding: 25px 30px 35px;
+		margin-bottom: 30px;
+	}
+	.msg-header{
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 15px;
+	}
+	.nick-area{
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+	.nick-label{
+		font-size: 15px;
+		color: #666;
+	}
+	#ritian{
+		border: 1px solid #d8d8d8;
+		border-radius: 4px;
+		padding: 5px 8px;
+		width: 140px;
+		font-size: 14px;
+		color: #333;
+		background: #fafafa;
+	}
+	.btn-text{
+		border: none;
+		background: none;
+		color: #042A8F;
+		cursor: pointer;
+		font-size: 14px;
+	}
+	.btn-text:hover{
+		text-decoration: underline;
+	}
+	.char-circle{
+		position: relative;
+	}
+	.circle-text{
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%,-50%);
+		font-size: 13px;
+		color: #042A8F;
+	}
+	#messageInput{
+		width: 100%;
+		height: 140px;
+		border: 1px solid #d8d8d8;
+		border-radius: 8px;
+		padding: 12px;
+		font-size: 15px;
+		resize: vertical;
+		transition: border .3s;
+	}
+	#messageInput:focus{
+		border-color: #042A8F;
+		outline: none;
+	}
+	.msg-toolbar{
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-top: 12px;
+	}
+	.char-tip{
+		font-size: 13px;
+		color: #999;
+	}
+	.btn-group{
+		display: flex;
+		gap: 10px;
+	}
+	.btn-primary,.btn-secondary{
+		padding: 7px 18px;
+		border: none;
+		border-radius: 4px;
+		font-size: 14px;
+		cursor: pointer;
+		transition: all .3s;
+	}
+	.btn-primary{
+		background: #042A8F;
+		color: #fff;
+	}
+	.btn-primary:hover{
+		background: #0648c4;
+	}
+	.btn-secondary{
+		background: #f0f0f0;
+		color: #333;
+	}
+	.btn-secondary:hover{
+		background: #e0e0e0;
+	}
+	.comment-list{
+		width: 100%;
+		max-width: 800px;
+	}
+	.comment-item{
+		background: #fff;
+		border-radius: 8px;
+		padding: 18px 22px;
+		margin-bottom: 15px;
+		box-shadow: 0 4px 12px rgba(0,0,0,.05);
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+	}
+	.comment-main{
+		flex: 1;
+	}
+	.comment-nick{
+		font-size: 15px;
+		color: #042A8F;
+		margin-bottom: 6px;
+	}
+	.comment-time{
+		font-size: 12px;
+		color: #999;
+		margin-bottom: 8px;
+	}
+	.comment-txt{
+		font-size: 15px;
+		line-height: 1.6;
+		color: #333;
+	}
+	.comment-del{
+		border: none;
+		background: none;
+		color: #999;
+		cursor: pointer;
+		font-size: 13px;
+	}
+	.comment-del:hover{
+		color: #f40;
+	}
+	/* 气泡背景 */
+	.msg-section::before{
+		content: '';
+		position: fixed;
+		width: 200px;
+		height: 200px;
+		background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Ccircle fill='%23d8e0ff' cx='100' cy='100' r='90'/%3E%3C/svg%3E") center/contain no-repeat;
+		opacity: .15;
+		animation: float 18s infinite ease-in-out;
+	}
+	@keyframes float{
+		0%,100%{transform: translateY(0) rotate(0deg);}
+		50%{transform: translateY(-30px) rotate(180deg);}
+	}
+</style>
+
+<!-- ===== 新逻辑 ===== -->
+<script>
+	/* 统一音乐逻辑（与 movie.html 完全一致） */
+	document.addEventListener('DOMContentLoaded', () => {
+		const music = document.getElementById('backgroundMusic');
+		const toggleBtn = document.getElementById('musicToggle');
+		const clickSound = document.getElementById('clickSound');
+		const isPlaying = localStorage.getItem('musicPlaying') === 'true';
+		if (isPlaying) {
+			music.play().then(() => toggleBtn.textContent = '🔇 关闭音乐').catch(() => {});
+		}
+		toggleBtn.addEventListener('click', () => {
+			if (music.paused) {
+				music.play().then(() => {
+					toggleBtn.textContent = '🔇 关闭音乐';
+					localStorage.setItem('musicPlaying', 'true');
+				}).catch(() => toggleBtn.textContent = '🔊 请点击我播放音乐');
+			} else {
+				music.pause();
+				toggleBtn.textContent = '🔊 播放音乐';
+				localStorage.setItem('musicPlaying', 'false');
+			}
+		});
+		document.addEventListener('mousedown', () => {
+			clickSound.currentTime = 0;
+			clickSound.play().catch(() => {});
+		}, { capture: true });
+	});
+
+	/* 字符圆环 & 计数 */
+	const input = document.getElementById('messageInput');
+	const progress = document.getElementById('progress');
+	const charPercent = document.getElementById('charPercent');
+	const remainingChars = document.getElementById('remainingChars');
+	const maxLen = 200;
+	function updateCircle() {
+		const len = input.value.length;
+		const percent = Math.max(0, Math.floor((maxLen - len) / maxLen * 100));
+		const offset = 163 - (163 * percent / 100);
+		progress.style.strokeDashoffset = offset;
+		charPercent.textContent = percent + '%';
+		remainingChars.textContent = maxLen - len;
+	}
+	input.addEventListener('input', updateCircle);
+	updateCircle();
+
+	/* 昵称修改 */
+	document.getElementById('changeNick').addEventListener('click', () => {
+		const nick = prompt('请输入新昵称：') || '匿名用户';
+		document.getElementById('ritian').value = nick;
+	});
+
+	/* 发表 & 清空 */
+	document.getElementById('postBt').addEventListener('click', () => {
+		if (!input.value.trim()) return alert('留言内容不能为空！');
+		// 这里调用你原有的 Storage.saveData() 即可
+		Storage.saveData();
+		input.value = '';
+		updateCircle();
+	});
+	document.getElementById('clearBt').addEventListener('click', () => {
+		if (confirm('确定清空所有留言？')) Storage.clearData();
+	});
+
+	/* 沿用你原有的 localStorage 存储逻辑 */
+	var Storage = {
+		saveData() {
+			const data = input.value, nick = document.getElementById('ritian').value;
+			const time = new Date().getTime() + Math.random() * 5;
+			localStorage.setItem(time, `${data}|${nick}|${this.getDateTime()}`);
+			this.writeData();
+		},
+		clearData() {
+			localStorage.clear();
+			this.writeData();
+		},
+		writeData() {
+			let html = '';
+			for (let i = localStorage.length - 1; i >= 0; i--) {
+				const [txt, nick, dt] = localStorage.getItem(localStorage.key(i)).split('|');
+				html += `<div class="comment-item">
+                        <div class="comment-main">
+                            <div class="comment-nick">${nick}</div>
+                            <div class="comment-time">${dt}</div>
+                            <div class="comment-txt">${txt}</div>
+                        </div>
+                        <button class="comment-del" onclick="Storage.del('${localStorage.key(i)}')">删除</button>
+                     </div>`;
+			}
+			document.getElementById('comment').innerHTML = html || '<p style="text-align:center;color:#999;">暂无留言</p>';
+		},
+		del(key) { localStorage.removeItem(key); this.writeData(); },
+		getDateTime() {
+			const d = new Date();
+			const pad = n => n < 10 ? '0' + n : n;
+			return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+		}
+	};
+	window.onload = () => Storage.writeData();
+</script>
+</body>
+</body>
+</html>

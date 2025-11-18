@@ -1,0 +1,388 @@
+/* 头部导航开始 */
+.header {
+	height: 80px;
+	width: 100%;
+	min-width: 1200px;
+	position: fixed;
+	top: 0;
+	line-height: 80px;
+	background-color: #fff;
+	border-bottom: 1px solid #d8d8d8;
+	z-index: 1000000;
+}
+.header .contain {
+	width: 1230px;
+	margin: 0 auto;
+}
+
+.header .contain a h1 {
+	display: none;
+}
+
+.header .logo {
+	float: left;
+	width: 70px;
+	height: 70px; /* 调整高度与宽度一致，确保是正方形 */
+	line-height: 100px; /* 与高度保持一致，文字居中（如果有文字） */
+	margin-top: 5px;
+	background: url("../img/logo-navi.png") no-repeat;
+	background-size: contain; /* 保持图片比例 */
+	background-position: center; /* 图片居中显示 */
+	margin-left: 35px;
+	border-radius: 0%; /* 核心属性：将容器变为圆形 */
+	overflow: hidden; /* 确保图片超出圆形区域的部分被裁剪 */
+}
+.header .cityselect {
+	text-align: center;
+	float: left;
+	width: 50px;
+	height: 80px;
+	height: 100%;
+	padding: 0 10px;
+	border: 1px solid transparent;
+	font-size: 18px;
+	position: relative;
+}
+
+.cityselect .down-deleta {
+	position: absolute;
+	right: -1px;
+	bottom: -2px;
+}
+
+.header .city-list {
+	display: none;
+	background-color: #fff;
+	border: 1px solid#d8d8d8;
+	position: absolute;
+	z-index: 100;
+	width: 478px;
+	height: 330px;
+	overflow-y: scroll;
+	left: -1px;
+	top: 79px;
+}
+
+.header .cityselect:hover .city-list {
+	display: block;
+	z-index: 9999;
+}
+
+.header .cityselect:hover {
+	border: 1px solid #ccc;
+	border-bottom: 2px solid #fff;
+}
+
+.header .city-list .postioncty {
+	display: block;
+	height: 58px;
+	padding-left: 20px;
+	line-height: 58px;
+	border-bottom: 1px solid#e5e5e5;
+	margin-bottom: 10px;
+	text-align: left;
+}
+
+.city-list .citys-wrapper {
+	margin-left: 20px;
+}
+
+.city-list .citys-wrapper .citys {
+	line-height: 24px;
+	width: 440px;
+	text-align: left;
+	margin-bottom: 20px;
+}
+
+.city-list .citys-wrapper .citys span {
+	margin-top: 8px;
+	width: 20px;
+	text-align: center;
+	float: left;
+	display: block;
+	background-color: #eee;
+	font-weight: 700;
+	line-height: 20px;
+}
+
+.city-list .citys-wrapper .citys div {
+	margin-left: 24px;
+}
+
+.city-list .citys-wrapper .citys div a {
+	display: inline-block;
+	line-height: 30px;
+	margin-top: 3px;
+	padding: 0 5px;
+	text-align: center;
+	font-size: 16px;
+}
+
+.city-list .citys-wrapper .citys div a:hover {
+	background: #f00;
+	color: #fff;
+}
+
+.header ul li {
+	float: left;
+	width: 70px;
+	height: 80px;
+	text-align: center;
+	font-size: 18px;
+	color: #333;
+}
+
+.header ul li a:hover {
+	color: #042A8F;
+	text-decoration: underline;
+}
+
+.header .userinfo {
+	width: 150px;
+	height: 80px;
+	float: right;
+	position: relative;
+}
+
+.header .userinfo img {
+	/* margin-top: 20px; */
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	cursor: pointer;
+	margin-left: 10px;
+}
+
+.header .userinfo a:hover {
+	text-decoration: underline;
+	color: #042A8F;
+}
+
+.header .serch-form {
+	float: right;
+	margin: 0 10px 0 0;
+	position: relative;
+}
+
+.header .serch-form .search {
+	width: 220px;
+	height: 40px;
+	color: #333;
+	line-height: 1.2;
+	border-radius: 30px;
+	margin-right: 10px;
+	border: 1px solid #ccc;
+	background-color: #faf8fa;
+	padding: 0 40px 0 20px;
+}
+
+.header .serch-form .submit {
+	width: 40px;
+	height: 40px;
+	position: absolute;
+	left: 180px;
+	top: 21px;
+	border: none;
+	border-radius: 30px;
+	background-color: #042A8F;
+	background-image: url("../img/search.png");
+	background-size: contain;
+}
+
+.header .appdownload {
+	float: right;
+	width: 117px;
+	height: 80px;
+	margin-right: 10px;
+	position: relative;
+	padding-left: 14px;
+}
+
+.header .appdownload .iphone-icon {
+	float: left;
+	/* display: inline-block; */
+	width: 15px;
+	height: 24px;
+	margin: 28px 7px 0 0px;
+	background-image: url("../img/iphone-icon.png");
+	background-size: contain;
+}
+
+.header .appdownload .downloadicon {
+	display: none;
+	width: 130px;
+	height: 165px;
+	position: absolute;
+	left: 0;
+	top: 80px;
+	background-color: #fff;
+	background-image: url("../img/app-link-icon.png");
+	background-repeat: no-repeat;
+	background-position: 24px 14px;
+	border: 1px solid #dcd4d7;
+}
+
+.header .appdownload:hover {
+	background-color: #fff;
+	border: 1px solid #dcd4d7;
+}
+
+.header .appdownload:hover .downloadicon {
+	display: block;
+	border-top: 1px solid #fff;
+}
+
+.header .appdownload .downloadicon p {
+	text-align: center;
+	font-size: 14px;
+}
+
+.header .appdownload .downloadicon .down-title {
+	color: #000;
+	margin-top: 115px;
+	line-height: 12px;
+}
+
+.header .appdownload .downloadicon .down-content {
+	line-height: 12px;
+	color: #999;
+	margin-top: 8px;
+}
+
+/* 导航菜单基础样式 */
+.header ul li {
+	float: left;
+	height: 80px; /* 与导航栏高度一致 */
+	padding: 0 15px;
+	line-height: 80px;
+	/* 其他样式（字体、颜色等） */
+}
+
+/* 新增：当前页菜单的高亮样式 */
+.header ul li.current {
+	border-bottom: 3px solid #042A8F; /* 底部高亮条（颜色可自定义） */
+	color: #042A8F; /* 文字同步高亮（可选） */
+}
+/* 确保链接文字颜色同步 */
+.header ul li.current a {
+	color: #042A8F;
+	text-decoration: none; /* 取消下划线（可选） */
+}
+
+/* 头部导航结束 */
+
+
+/* 选择区开始 */
+.pager {
+	text-align: center;
+	margin: 4em 0;
+}
+
+.pager a {
+	padding: 5px 10px;
+	border: 1px solid #d8d8d8;
+	margin: 0 3px;
+}
+
+.pager a:hover {
+	border-color: #ef4238;
+}
+
+.pager .select {
+	border: none;
+	background: #042A8F;
+	color: #fff;
+}
+
+/* 选择区结束 */
+
+
+/* 底部区域开始 */
+.footer {
+	background-color: #262426;
+	padding: 56px 0;
+	text-align: center;
+	color: #ccc;
+	font-size: 14px;
+}
+
+.footer .special span {
+	margin: 0 7px;
+	height: 12px;
+}
+
+.footer p a {
+	color: #ccc;
+}
+
+.footer .special a {
+	color: #ef4238;
+}
+
+.footer .last {
+	margin-top: 20px;
+}
+
+.footer .last a {
+	margin: 8px;
+}
+
+/* 底部区域结束 */
+
+/* ===== 统一下拉菜单 ===== */
+.dropdown {
+	position: relative;
+	display: inline-block;
+}
+.dropdown-content {
+	display: none;
+	position: absolute;
+	top: 100%;
+	left: 0;
+	background: #fff;
+	width: 130px;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+	z-index: 9999;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	border-radius: 2px;
+	overflow: hidden;
+}
+.dropdown-content a {
+	display: block;
+	padding: 5px 10px;
+	text-decoration: none;
+	color: #333;
+	white-space: nowrap;
+	font-size: 13px;
+	line-height: 1.4;
+	width: 100%;
+	box-sizing: border-box;
+}
+.dropdown-content a:hover {
+	background: #f5f5f5;
+}
+.dropdown:hover .dropdown-content {
+	display: block;
+}
+
+@media (max-width: 768px) {
+	.dropdown-content {
+		position: static;
+		box-shadow: none;
+		width: 100%;
+	}
+}
+
+/* ===== 调整 app 下载二维码居中 ===== */
+.header .appdownload {
+	position: relative;          /* 已为下拉菜单提供参照，无需改动 */
+}
+.header .appdownload .downloadicon {
+	left: 50%;                   /* 以按钮中心为参照 */
+	transform: translateX(-50%); /* 向左回退自身宽度一半 → 居中 */
+	margin-left: 0;              /* 覆盖旧样式可能存在的偏移 */
+	text-align: center;          /* 内部文字也居中 */
+	padding: 14px 10px 10px;     /* 微调上下留白，视觉更均衡 */
+}

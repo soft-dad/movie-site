@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/index.css">
+    <link rel="stylesheet" href="./css/common.css">
+    <title>首页</title>
+</head>
+
+<body class="day">
+<!-- 背景音乐播放器 -->
+<audio id="backgroundMusic" loop>
+  <source src="./music/background_music.mp3" type="audio/mpeg">
+  您的浏览器不支持音频播放。
+</audio>
+
+<!-- 点击音效播放器（提前加载，确保无延迟） -->
+<audio id="clickSound" preload="auto">
+  <source src="./music/click.mp3" type="audio/mpeg">
+  您的浏览器不支持音频播放。
+</audio>
+
+<!-- 音乐控制按钮 -->
+<button id="musicToggle" style="
+    position: fixed; top: 100px; right: 20px; z-index: 1000;
+    padding: 10px; cursor: pointer; background-color: rgba(0,0,0,0.5);
+    color: white; border: none; border-radius: 5px;
+">🔊 播放音乐</button>
+
+<script>
+  // 1. 集中获取所有核心元素
+  const music = document.getElementById('backgroundMusic');
+  const toggleButton = document.getElementById('musicToggle');
+  const clickSound = document.getElementById('clickSound');
+
+  // 2. 背景音乐状态检查函数
+  function checkMusicStatus() {
+    const isPlaying = localStorage.getItem('musicPlaying') === 'true';
+    if (isPlaying) {
+      music.play().then(() => {
+        toggleButton.textContent = '🔇 关闭音乐';
+      }).catch(error => {
+        console.log("页面切换时自动播放失败，需要用户交互:", error);
+        localStorage.setItem('musicPlaying', 'false');
+        toggleButton.textContent = '🔊 播放音乐';
+      });
+    } else {
+      toggleButton.textContent = '🔊 播放音乐';
+    }
+  }
+
+  // 3. 背景音乐控制函数
+  function toggleMusic() {
+    if (music.paused) {
+      music.play().then(() => {
+        toggleButton.textContent = '🔇 关闭音乐';
+        localStorage.setItem('musicPlaying', 'true');
+      }).catch(error => {
+        console.log("音乐播放失败，需要用户交互:", error);
+        toggleButton.textContent = '🔊 请点击我播放音乐';
+      });
+    } else {
+      music.pause();
+      toggleButton.textContent = '🔊 播放音乐';
+      localStorage.setItem('musicPlaying', 'false');
+    }
+  }
+
+  // 4. 点击音效播放函数（增加错误捕获，确保稳定）
+  function playClickSound() {
+    try {
+      clickSound.currentTime = 0;
+      clickSound.play().catch(error => {
+        if (error.name === 'NotAllowedError') {
+          console.log("首次点击需先激活页面，再次点击即可正常播放");
+        } else {
+          console.log("点击音效播放异常:", error);
+        }
+      });
+    } catch (e) {
+      console.log("音效文件加载异常:", e);
+    }
+  }
+
+  // 5. 全局绑定点击音效
+  function initGlobalClickSound() {
+    document.addEventListener('mousedown', playClickSound, { capture: true });
+
+    const observer = new MutationObserver(mutations => {
+      mutations.forEach(mutation => {
+        mutation.addedNodes.forEach(node => {
+          if (node.nodeType === 1) {
+            node.addEventListener('mousedown', playClickSound, { capture: true });
+          }
+        });
+      });
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+
+  // 6. 页面加载完成后统一初始化
+  document.addEventListener('DOMContentLoaded', function() {
+    checkMusicStatus();
+    toggleButton.addEventListener('click', toggleMusic);
+    initGlobalClickSound();
+    
+    // 初始化下拉菜单交互
+    initDropdownMenu();
+  });
+
+  // 下拉菜单初始化函数
+  function initDropdownMenu() {
+    const movieDropdown = document.querySelector('.movie-dropdown');
+    const dropbtn = document.querySelector('.movie-dropdown .dropbtn');
+    const dropdownContent = document.querySelector('.movie-dropdown .dropdown-content');
+    
+    if (movieDropdown && dropbtn && dropdownContent) {
+      // 为下拉菜单项添加点击事件，确保跳转正常
+      const dropdownItems = dropdownContent.querySelectorAll('a');
+      dropdownItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+          e.stopPropagation();
+          // 强制跳转确保生效
+          window.location.href = this.getAttribute('href');
+        });
+      });
+      
+      // 移动设备点击处理
+      dropbtn.addEventListener('click', function(e) {
+        if (window.innerWidth < 768) {
+          e.preventDefault();
+          dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+        }
+      });
+      
+      // 点击其他区域关闭菜单
+      document.addEventListener('click', function(e) {
+        if (!movieDropdown.contains(e.target)) {
+          dropdownContent.style.display = 'none';
+        }
+      });
+    }
+  }
+</script>
+
+    <!-- 头部导航 -->
+    <nav class="header">
+        <div class="contain">
+            <!-- logo区 -->
+            <a href="#" class="logo"></a>
+            <!-- 列表 -->
+            <ul>
+                <li><a href="#" id="homeLink">首页</a></li>
+                <!-- 修改电影下拉菜单结构，增加专用类名 -->
+                <li class="dropdown movie-dropdown">
+                    <a href="./movie.html" class="dropbtn">电影</a>
+                    <div class="dropdown-content">
+                        <a href="./category_Action.html">动作片</a>
+                        <a href="./category_Comedy.html">喜剧片</a>
+                        <a href="./category_Romance.html">爱情片</a>
+                        <a href="./category_Sci-fic.html">科幻片</a>
+                    </div>
+                </li>
+                <li><a href="./cinema.html">影院</a></li> <!-- 修正"演院"为"影院" -->
+                <li class="dropdown">
+                    <a href="./liuyan.html" class="dropbtn">反馈</a>
+                    <div class="dropdown-content">
+                        <a href="liuyan_tel.html">电话客服</a>
+                        <a href="liuyan.html">系统留言</a>
+                        <a href="liuyan_feedback.html">意见反馈</a>
+                        <a href="liuyan_about.html">关于我们</a>
+                    </div>
+                </li>
+                <li><a href="./mall.html">商城</a></li>
+            </ul>
+            <!-- 用户登入 -->
+            <div class="userinfo">
+                <img src="./img/userifo.png" alt="用户">
+                <a href="./login.html" style="margin-left: 20px;">登录</a>
+            </div>
+            <!-- 搜索区 -->
+            <form action="#" class="serch-form" method="POST">
+                <input type="search" class="search" placeholder="找影视剧 影人 影院">
+                <input type="button" class="submit" value="">
+            </form>
+            <!-- app下载 -->
+                <div class="appdownload">
+                    <a href="#">
+                        <span class="iphone-icon"></span>
+                        <span class="apptext">app下载</span>
+                        <span class="caret"></span>
+                        <div class="downloadicon">
+                            <p class="down-title">扫码下载app</p>
+                            <p class="down-content">选座更优惠</p>
+                        </div>
+                    </a>
+            </div>
+        </div>
+    </nav>
+    <!-- 横幅广告开始 -->
+    <div class="canner-wrap">
+        <div class="canner">
+            <img id="largeImage" src="./img/scenery1.jpg" alt="大图">
+            <div class="thumbnails" id="now-hot">
+                <img src="./img/scenery1.jpg" alt="小图1" class="thumb" data-full="./img/scenery1.jpg">
+                <img src="./img/scenery2.jpg" alt="小图2" class="thumb" data-full="./img/scenery2.jpg">
+                <img src="./img/scenery3.jpg" alt="小图3" class="thumb" data-full="./img/scenery3.jpg">
+                <img src="./img/scenery4.jpg" alt="小图4" class="thumb" data-full="./img/scenery4.jpg">
+                <img src="./img/scenery5.jpg" alt="小图4" class="thumb" data-full="./img/scenery5.jpg">
+                <img src="./img/scenery6.jpg" alt="小图4" class="thumb" data-full="./img/scenery6.jpg">
+            </div>
+            <span class="left-arr">&lt;</span>
+            <span class="right-arr">&gt;</span>
+            <ul class="choose-dot">
+                <li><a href="" class="dot" data-index="0"></a></li>
+                <li><a href="" class="dot" data-index="1"></a></li>
+                <li><a href="" class="dot" data-index="2"></a></li>
+                <li><a href="" class="dot" data-index="3"></a></li>
+                <li><a href="" class="dot" data-index="4"></a></li>
+                <li><a href="" class="dot" data-index="5"></a></li>
+            </ul>
+        </div>
+    </div>
+    <!-- 横幅广告介绍 -->
+
+    <!-- 第一个主要区域 -->
+    <div class="contain bfc" id="chief">
+        <!-- 右边 -->
+        <div class="aside fr">
+            <span class="panel-title">今日票房</span>
+            <!-- 电影list -->
+            <div class="panel-content bfc">
+                <ul>
+                    <li class="ranking-item-top">
+                        <a>
+                            <div class="ranking-top-left zoom-container">
+                                <i class="ranking-top-icon"></i>
+                                <img src="./img/ranking-img.png" alt="电影海报" class="zoom-image">
+                            </div>
+                            <div class="ranking-top-right">
+                                <span class="movie-name">冰雪奇缘2</span>
+                                <p class="movie-wish">8473.65万</p>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="ranking-item">
+                        <a>
+                            <i class="ranking-index">2</i>
+                            <span class="ranking-movie-name">大约在冬季</span>
+                            <span class="stonefont">426.20万</span>
+                        </a>
+                    </li>
+                    <li class="ranking-item">
+                        <a>
+                            <i class="ranking-index">3</i>
+                            <span class="ranking-movie-name">海上钢琴师</span>
+                            <span class="stonefont">430.02万</span>
+                        </a>
+                    </li>
+                    <li class="ranking-item">
+                        <a>
+                            <i class="ranking-index color-ccc">4</i>
+                            <span class="ranking-movie-name">你是凶手</span>
+                            <span class="stonefont">389.35万</span>
+                        </a>
+                    </li>
+                    <li class="ranking-item">
+                        <a>
+                            <i class="ranking-index color-ccc">5</i>
+                            <span class="ranking-movie-name">少年的你</span>
+                            <span class="stonefont">355.86万</span>
+                        </a>
+                    </li>
+                    <li class="ranking-item">
+                        <a>
+                            <i class="ranking-index color-ccc">6</i>
+                            <span class="ranking-movie-name">决战中途岛</span>
+                            <span class="stonefont">335.19万</span>
+                        </a>
+                    </li>
+                    <li class="ranking-item">
+                        <a>
+                            <i class="ranking-index color-ccc">7</i>
+                            <span class="ranking-movie-name">触不可及</span>
+                            <span class="stonefont">197.75万</span>
+                        </a>
+                    </li>
+                    <li class="ranking-item">
+                        <a>
+                            <i class="ranking-index color-ccc">8</i>
+                            <span class="ranking-movie-name">我和我的祖国</span>
+                            <span class="stonefont">126.51万</span>
+                        </a>
+                    </li>
+                    <li class="ranking-item">
+                        <a>
+                            <i class="ranking-index color-ccc">9</i>
+                            <span class="ranking-movie-name">受益人</span>
+                            <span class="stonefont">108.84万</span>
+                        </a>
+                    </li>
+                    <li class="ranking-item">
+                        <a>
+                            <i class="ranking-index color-ccc">10</i>
+                            <span class="ranking-movie-name">天气之子</span>
+                            <span class="stonefont">103.01万</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="box-total-wrapper">
+                <h3>年度总结</h3>
+                <div class="fr bottom-left">
+                    <p>
+                        <span class="num">1.40亿</span>
+                        <a href="./year.html" class="more">查看更多&gt;</a>
+                    </p>
+                    <p class="time">
+                        倒计时：<span class="hour">00</span>:<span class="minute">00</span>:<span class="second">00</span>
+                        <span class="pull-right">专业版实时票房数据</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <!-- 左边 -->
+        <div class="main">
+            <div class="panelhead">
+                <span class="textcolor-red">正在热映(32部)</span>
+                <span class="more"><a href="./movie.html" style="cursor: pointer;">更多&gt;</a></span>
+            </div>
+            <!-- 电影列表 -->
+            <div class="panel-content">
+                <dl class="movies-list">
+                    <dd class="movie-item">
+                        <a class="movie-img"><img src="./img/movie1.jpg" alt=""></a>
+                        <a href="./xuanpiao.html">
+                            <div class="movie-sale">购票</div>
+                        </a>
+                        <i class="imax3d"></i>
+                        <i class="integer">8.<span>0</span></i>
+                        <div class="movietitle">冰雪奇缘2</div>
+                    </dd>
+                    <dd class="movie-item">
+                        <a class="movie-img"><img src="./img/movie4.jpg" alt=""></a>
+                        <a href="./xuanpiao.html">
+                            <div class="movie-sale">购票</div>
+                        </a>
+                        <i class="imax3d"></i>
+                        <i class="integer">9.<span>7</span></i>
+                        <div class="movietitle">中国机长</div>
+                    </dd>
+                    <dd class="movie-item">
+                        <a class="movie-img"><img src="./img/movie7.jpg" alt=""></a>
+                        <a href="./xuanpiao.html">
+                            <div class="movie-sale">购票</div>
+                        </a>
+                        <i class="imax3d"></i>
+                        <i class="integer">9.<span>3</span></i>
+                        <div class="movietitle">决战中途岛</div>
+                    </dd>
+                    <dd class="movie-item">
+                        <a class="movie-img"><img src="./img/movie8.jpg" alt=""></a>
+                        <a href="./xuanpiao.html">
+                            <div class="movie-sale">购票</div>
+                        </a>
+                        <i class="integer">9.<span>0</span></i>
+                        <div class="movietitle">终结者</div>
+                    </dd>
+                    <dd class="movie-item">
+                        <a class="movie-img"><img src="./img/movie9.jpg" alt=""></a>
+                        <a href="./xuanpiao.html">
+                            <div class="movie-sale">购票</div>
+                        </a>
+                        <i class="imax3d"></i>
+                        <i class="integer">8.<span>7</span></i>
+                        <div class="movietitle">攀登者</div>
+                    </dd>
+                    <dd class="movie-item">
+                        <a class="movie-img"><img src="./img/movie21.jpg" alt=""></a>
+                        <a href="./xuanpiao.html">
+                            <div class="movie-sale">购票</div>
+                        </a>
+                        <i class="imax3d"></i>
+                        <i class="integer">9.<span>0</span></i>
+                        <div class="movietitle">冰封暴</div>
+                    </dd>
+                    <dd class="movie-item">
+                        <a class="movie-img"><img src="./img/movie11.jpg" alt=""></a>
+                        <a href="./xuanpiao.html">
+                            <div class="movie-sale">购票</div>
+                        </a>
+                        <i class="integer">8.<span>9</span></i>
+                        <div class="movietitle">勇敢者游戏</div>
+                    </dd>
+                    <dd class="movie-item" id="hot-movie">
+                        <a class="movie-img"><img src="./img/movie26.jpg" alt=""></a>
+                        <a href="./xuanpiao.html">
+                            <div class="movie-sale">购票</div>
+                        </a>
+                        <i class="integer">9.<span>5</span></i>
+                        <div class="movietitle">利刃出鞘</div>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第二个主要区域 -->
+    <div class="contain bfc" id="chief">
+        <!-- 右边 -->
+        <div class="aside fr" id="hot-movie">
+            <span class="panel-title text-yellow">TOP&nbsp;100</span>
+            <span class="see-com"><a href="./top100.html">查看完整榜单&gt;</a></span>
+            <!-- 电影list -->
+            <div class="panel-content bfc">
+                <ul>
+                    <li class="ranking-item-top">
+                        <a>
+                            <div class="ranking-top-left">
+                                <i class="ranking-top-icon"></i>
+                                <img src="./img/ranking-img2.jpg" alt="">
+                            </div>
+                            <div class="ranking-top-right">
+                                <span class="movie-name">霸王别姬</span>
+                                <p class="movie-wish">8万</p>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="ranking-item">
+                        <a>
+                            <i class="ranking-index">2</i>
+                            <span class="ranking-movie-name">肖申克的救赎</span>
+                            <span class="stonefont">9.5分</span>
+                        </a>
+                    </li>
+                    <li class="ranking-item">
+                        <a>
+                            <i class="ranking-index">3</i>
+                            <span class="ranking-movie-name">罗马假日</span>
+                            <span class="stonefont">9.1分</span>
+                        </a>
+                    </li>
+                    <li class="ranking-item">
+                        <a>
+                            <i class="ranking-index color-ccc">4</i>
+                            <span class="ranking-movie-name">这个杀手不太冷</span>
+                            <span class="stonefont">9.5分</span>
+                        </a>
+                    </li>
+                    <li class="ranking-item">
+                        <a>
+                            <i class="ranking-index color-ccc">5</i>
+                            <span class="ranking-movie-name">泰坦尼克号</span>
+                            <span class="stonefont">9.5分</span>
+                        </a>
+                    </li>
+                    <li class="ranking-item">
+                        <a>
+                            <i class="ranking-index color-ccc">6</i>
+                            <span class="ranking-movie-name">唐伯虎点秋香</span>
+                            <span class="stonefont">9.1分</span>
+                        </a>
+                    </li>
+                    <li class="ranking-item">
+                        <a>
+                            <i class="ranking-index color-ccc">7</i>
+                            <span class="ranking-movie-name">乱世佳人</span>
+                            <span class="stonefont">9.1分</span>
+                        </a>
+                    </li>
+                    <li class="ranking-item">
+                        <a>
+                            <i class="ranking-index color-ccc">8</i>
+                            <span class="ranking-movie-name">魂断蓝桥</span>
+                            <span class="stonefont">9.2分</span>
+                        </a>
+                    </li>
+                    <li class="ranking-item">
+                        <a>
+                            <i class="ranking-index color-ccc">9</i>
+                            <span class="ranking-movie-name">天空之城</span>
+                            <span class="stonefont">9.0分</span>
+                        </a>
+                    </li>
+                    <li class="ranking-item">
+                        <a>
+                            <i class="ranking-index color-ccc">10</i>
+                            <span class="ranking-movie-name">辛德勒的名单</span>
+                            <span class="stonefont">9.0分</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- 左边 -->
+        <div class="main">
+            <div class="panelhead">
+                <span class="textcolor-blue"> 热播电影</span>
+                <a class="special2" href="./category_Romance.html">爱情</a>
+                <a class="special2" href="./category_Comedy.html">喜剧</a>
+                <a class="special2" href="./category_Action.html">动作</a>
+                <a class="special2" href="category_Sci-fic.html">科幻</a>
+                <span class="more"><a href="./movie.html" style="cursor: pointer;">更多&gt;
+            </div>
+            <!-- 电影列表 -->
+            <div class="panel-content">
+                <dl class="movies-list movies-list-2">
+                    <dd class="movie-item movie-item-spec">
+                        <a class="movie-img-bg">
+                            <img src="./img/index-movie-bg.jpg" alt="唐人街探案2" id="movieImage">
+                        </a>
+                        <i class="integer2">9.<span>0</span></i>
+                        <div class="movietitle2">唐人街探案2</div>
+                    </dd>
+                    <dd class="movie-item">
+                        <a class="movie-img">
+                            <img src="./img/movie2.jpg" alt="">
+                        </a>
+                        <i class="integer2">8.<span>6</span></i>
+                        <div class="movietitle2">战狼</div>
+                    </dd>
+                    <dd class="movie-item">
+                        <a class="movie-img">
+                            <img src="./img/movie3.jpg" alt="">
+                        </a>
+                        <i class="integer2">8.<span>9</span></i>
+                        <div class="movietitle2">大圣归来</div>
+                    </dd>
+                    <dd class="movie-item">
+                        <a class="movie-img">
+                            <img src="./img/movie11.jpg" alt="">
+                        </a>
+                        <i class="integer2">9.<span>5</span></i>
+                        <div class="movietitle2">勇敢者游戏2</div>
+                    </dd>
+                    <dd class="movie-item" style="margin-left: 22px;">
+                        <a class="movie-img">
+                            <img src="./img/movie12.jpg" alt="">
+                        </a>
+                        <i class="integer2">9.<span>8</span></i>
+                        <div class="movietitle2">魔镜奇缘3</div>
+                    </dd>
+                    <dd class="movie-item">
+                        <a class="movie-img">
+                            <img src="./img/movie28.jpg" alt="">
+                        </a>
+                        <i class="integer2">9.<span>5</span></i>
+                        <div class="movietitle2">吹哨人</div>
+                    </dd>
+                    <dd class="movie-item">
+                        <a class="movie-img">
+                            <img src="./img/movie9.jpg" alt="">
+                        </a>
+                        <i class="integer2">8.<span>7</span></i>
+                        <div class="movietitle2">攀登者</div>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <!-- 右侧导航栏开始 -->
+    <div id="tool">
+        <div class="bnt">
+            <a href="" class="c1 active">宣传 影片</a>
+            <a href="#now-hot" class="c2">正在 热映</a>
+            <a href="#hot-movie" class="c3">热播 电影</a>
+            <a class="c4" onclick="changeBg()">切换 背景</a>
+            <a href="#" class="c5">回到 顶部</a>
+        </div>
+    </div>
+    <!-- 右侧导航栏结束 -->
+
+    <!-- 底部开始 -->
+    <div class="footer">
+        <p>商务合作邮箱：v@longteng.com 客服电话：10105335 违法和不良信息举报电话：4006019900 </p>
+        <p>用户投诉邮箱：tousujubao@meituan.com 舞弊线索举报邮箱：wubijubao@longteng.com </p>
+        <p>
+            <a>中华人民共和国增值电信业务经营许可证 京B2-20190350 </a>
+            <span>|</span>
+            <a> 营业性演出许可证 京演（机构）（2024）4094号</a>
+        </p>
+
+        <p>
+            <a>广播电视节目制作经营许可证 （京）字第08478号 </a>
+            <span>|</span>
+            <a> 网络文化经营许可证 京网文（2024）3837-369号</a>
+        </p>
+        <p>
+            <a>用户服务协议 </a>
+            <span>|</span>
+            <a> 平台交易规则总则</a>
+            <span>|</span>
+            <a>隐私政策</a>
+        </p>
+        <p><a>京公网安备 11010102003232号</a></p>
+        <p>文化传媒有限公司</p>
+        <p>©2024 电影 longteng.com</p>
+        <p class="last">
+            <a><img src="./img/network.png" alt=""></a>
+            <a><img src="./img/license.png" alt=""></a>
+        </p>
+    </div>
+    <!-- 底部结束 -->
+    <script src="js/index.js"></script>
+    <script src="js/daojishi.js"></script>
+
+    <!-- 轻点音效补丁 -->
+    <script>
+    (function(){
+      const clickSound = document.getElementById('clickSound');
+      if(!clickSound) return;
+      document.addEventListener('mousedown', () => {
+        clickSound.currentTime = 0;
+        clickSound.play().catch(()=>{});
+      }, {capture: true, passive: true});
+    })();
+    </script>
+</body>
+</html>

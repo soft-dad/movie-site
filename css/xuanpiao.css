@@ -1,0 +1,405 @@
+* {
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    list-style: none;
+    background-repeat: no-repeat;
+}
+
+.con-box {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 0 auto;
+}
+.left {
+    width: 60%;
+    height: 100vh;
+    border-right: 1px dashed #000;
+}
+
+.left p {
+    width: 70%;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    margin: 30px auto;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+}
+
+.seat {
+    display: flex;
+    width: 70%;
+    height: 600px;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: space-around;
+    align-content: center;
+    margin: 0 auto;
+    font-size: 10px;
+}
+
+.seat li {
+    width: 8%;
+    height: 8%;
+    border-radius: 5px;
+    background-color: #b9ef9f;
+    line-height: 60px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.right {
+    width: 35%;
+    height: 100vh;
+    color: #a79e9f;
+    position: relative;
+}
+
+.right-con {
+    width: 350px;
+    height: 90vh;
+    position: absolute;
+    right: 0;
+    top: 5%;
+    line-height: 28px;
+}
+
+#seatNumbers {
+    width: 240px;
+}
+
+.seat-number {
+    display: inline-block;
+    width: 100px;
+    height: 30px;
+    background-color: #efefef;
+    border-radius: 5px;
+    text-align: center;
+    margin-left: 10px;
+    margin-bottom: 10px;
+    line-height: 30px;
+    color: #000;
+    border: #d1d1d1 1px solid;
+}
+
+.right-con button {
+    width: 70px;
+    height: 25px;
+    margin: 12px 8px;
+    background-color: #efefef;
+    border: solid 0.5px #000;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+/* 1. 基础样式：统一设计语言 */
+:root {
+    /* 主色调：影院蓝（增强品牌感） */
+    --primary: #165DFF;
+    /* 功能色：选中绿/已售红/警告橙 */
+    --selected: #36D399;
+    --sold: #F87272;
+    --warning: #FBBD23;
+    /* 中性色：文本/边框/背景 */
+    --text-main: #333333;
+    --text-secondary: #666666;
+    --text-light: #999999;
+    --border: #E5E7EB;
+    --bg-main: #FAFAFA;
+    --bg-card: #FFFFFF;
+    /* 阴影/圆角：统一层次感 */
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    --radius: 8px;
+    --radius-sm: 4px;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    padding: 0 20px 30px;
+    min-height: 100vh;
+}
+/* 2. 容器布局：居中+响应式 */
+.page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding-top: 20px;
+}
+.main-content {
+    display: flex;
+    gap: 30px;
+    align-start: flex-start;
+}
+/* 左侧选座区：占比主导 */
+.seat-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+/* 右侧订单区：固定宽度+卡片化 */
+.order-section {
+    flex: 0 0 280px;
+}
+/* 3. 银幕区域：增强真实感 */
+.screen-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+.cinema-brand {
+    font-size: 14px;
+    color: var(--text-secondary);
+    padding: 4px 12px;
+    background-color: rgba(22, 93, 255, 0.1);
+    border-radius: 16px;
+    margin-bottom: 8px;
+}
+.screen-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-main);
+}
+.screen-area {
+    width: 100%;
+    max-width: 500px;
+    height: 60px;
+    background: linear-gradient(180deg, #E5E7EB 0%, #D1D5DB 100%);
+    border-radius: var(--radius) var(--radius) 0 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) inset;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+.best-view-tip {
+    font-size: 13px;
+    color: var(--warning);
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.best-view-tip::before {
+    content: "💡";
+    font-size: 14px;
+}
+/* 4. 图例：清晰+紧凑 */
+.legend-container {
+    display: flex;
+    gap: 24px;
+    padding: 12px 20px;
+    background-color: var(--bg-card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    justify-content: center;
+    margin-bottom: 8px;
+}
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+}
+.legend-color.available {
+    background-color: var(--bg-card);
+}
+.legend-color.selected {
+    background-color: var(--selected);
+    border-color: var(--selected);
+}
+.legend-color.sold {
+    background-color: var(--sold);
+    border-color: var(--sold);
+}
+/* 5. 座位区：优化间距+交互反馈 */
+.seat-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(10, 36px);
+    gap: 12px;
+    padding: 24px;
+    background-color: var(--bg-card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    justify-content: center;
+}
+.seat-item {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid var(--border);
+}
+/* 座位状态样式 */
+.seat-item.available {
+    background-color: var(--bg-card);
+    color: var(--text-secondary);
+}
+.seat-item.available:hover {
+    background-color: rgba(22, 93, 255, 0.05);
+    border-color: var(--primary);
+    color: var(--primary);
+    transform: scale(1.05);
+}
+.seat-item.selected {
+    background-color: var(--selected);
+    border-color: var(--selected);
+    color: #FFFFFF;
+}
+.seat-item.selected:hover {
+    background-color: #2EC4B6;
+    transform: scale(1.05);
+}
+.seat-item.sold {
+    background-color: var(--sold);
+    border-color: var(--sold);
+    color: #FFFFFF;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+/* 最佳观影区座位标识 */
+.seat-item.best-view {
+    position: relative;
+}
+.seat-item.best-view::after {
+    content: "";
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 2px;
+    background-color: var(--warning);
+    border-radius: 1px;
+}
+/* 6. 订单卡片：强化层次+信息分区 */
+.order-card {
+    background-color: var(--bg-card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+.order-header {
+    background-color: var(--primary);
+    color: #FFFFFF;
+    padding: 16px 20px;
+    font-size: 16px;
+    font-weight: 600;
+}
+.order-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.order-info {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+}
+.info-label {
+    color: var(--text-secondary);
+}
+.info-value {
+    color: var(--text-main);
+    font-weight: 500;
+}
+/* 关键信息高亮 */
+.info-value.seat-value {
+    color: var(--primary);
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.info-value.price-value {
+    color: var(--sold);
+    font-size: 16px;
+}
+/* 分隔线 */
+.order-divider {
+    height: 1px;
+    background-color: var(--border);
+    margin: 8px 0;
+}
+/* 购票按钮：突出+交互 */
+.buy-btn {
+    width: 100%;
+    padding: 12px 0;
+    background-color: var(--primary);
+    color: #FFFFFF;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 8px;
+}
+.buy-btn:hover {
+    background-color: #0E4BD8;
+    box-shadow: 0 4px 12px rgba(22, 93, 255, 0.2);
+}
+.buy-btn:disabled {
+    background-color: var(--text-light);
+    cursor: not-allowed;
+    box-shadow: none;
+}
+/* 7. 音乐控制：弱化但可用 */
+.music-control {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    z-index: 100;
+    padding: 8px 14px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+.music-control:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+/* 8. 下拉菜单核心样式 */
+.movie-dropdown {
+    position: relative;
+    display: inline-block;
+}

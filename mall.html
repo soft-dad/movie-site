@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/mall.css">
+    <link rel="stylesheet" href="./css/common.css">
+    <link rel="stylesheet" href="./css/index.css">
+    <title>商城|电影</title>
+</head>
+
+<body>
+<!-- ===== 背景音乐 & 点击音效（原样保留） ===== -->
+
+<!-- 背景音乐播放器 -->
+<audio id="backgroundMusic" loop>
+	<source src="music/background_music.mp3" type="audio/mpeg">
+	您的浏览器不支持音频播放。
+</audio>
+
+<!-- 点击音效播放器（提前加载，确保无延迟） -->
+<audio id="clickSound" preload="auto">
+	<source src="music/click.mp3" type="audio/mpeg">
+	您的浏览器不支持音频播放。
+</audio>
+
+<!-- 音乐控制按钮 -->
+<button id="musicToggle" style="
+    position: fixed; top: 100px; right: 20px; z-index: 1000;
+    padding: 10px; cursor: pointer; background-color: rgba(0,0,0,0.5);
+    color: white; border: none; border-radius: 5px;
+">
+	🔊 播放音乐
+</button>
+
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		const music = document.getElementById('backgroundMusic');
+		const toggleButton = document.getElementById('musicToggle');
+		const clickSound = document.getElementById('clickSound');
+		const SOUND_MIN_DURATION = 200;
+
+		// 简化的音频检查函数
+		function checkAudioAvailability() {
+			// 检查背景音乐
+			if (music.error) {
+				console.error('背景音乐错误:', music.error);
+				toggleButton.textContent = '🔊 音乐文件错误';
+			}
+
+			// 检查点击音效
+			if (clickSound.error) {
+				console.error('点击音效错误:', clickSound.error);
+			}
+		}
+
+		// 播放点击音效的简化版本
+		function playClickSound() {
+			return new Promise(resolve => {
+				// 无论如何都在最短时间后resolve，确保交互不卡顿
+				setTimeout(resolve, SOUND_MIN_DURATION);
+
+				// 尝试播放音效
+				if (clickSound && clickSound.readyState >= 2) {
+					clickSound.currentTime = 0;
+					clickSound.play().catch(e => console.log('音效播放失败:', e));
+				}
+			});
+		}
+
+		// 背景音乐控制
+		toggleButton.addEventListener('click', function() {
+			// 先播放点击音效，再切换背景音乐状态
+			playClickSound().then(() => {
+				if (music.paused) {
+					music.play()
+						.then(() => toggleButton.textContent = '🔇 关闭音乐')
+						.catch(e => {
+							console.log('音乐播放失败:', e);
+							alert('音乐播放失败，请检查文件是否存在');
+						});
+				} else {
+					music.pause();
+					toggleButton.textContent = '🔊 播放音乐';
+				}
+			});
+		});
+
+		// 为所有可点击元素添加音效
+		document.querySelectorAll('a, button, input[type="button"], input[type="submit"]').forEach(element => {
+			// 排除音乐按钮，因为已经单独处理
+			if (element.id !== 'musicToggle') {
+				element.addEventListener('click', function(e) {
+					// 对链接特殊处理，防止立即跳转
+					if (this.tagName === 'A' && this.href && !this.href.includes('#')) {
+						e.preventDefault();
+						const href = this.href;
+						const target = this.target;
+
+						playClickSound().then(() => {
+							if (target === '_blank') {
+								window.open(href, '_blank');
+							} else {
+								window.location.href = href;
+							}
+						});
+					} else {
+						// 普通按钮只播放音效
+						playClickSound();
+					}
+				});
+			}
+		});
+
+		// 初始化下拉菜单（保留原有功能）
+		function initDropdownMenus() {
+			const dropdowns = document.querySelectorAll('.dropdown');
+
+			dropdowns.forEach(dropdown => {
+				const dropbtn = dropdown.querySelector('.dropbtn');
+				const dropdownContent = dropdown.querySelector('.dropdown-content');
+
+				if (dropbtn && dropdownContent) {
+					const dropdownItems = dropdownContent.querySelectorAll('a');
+					dropdownItems.forEach(item => {
+						item.addEventListener('click', function(e) {
+							e.stopPropagation();
+							const href = this.getAttribute('href');
+							playClickSound().then(() => {
+								window.location.href = href;
+							});
+						});
+					});
+
+					if (window.innerWidth < 768) {
+						dropbtn.addEventListener('click', function(e) {
+							e.preventDefault();
+							dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+						});
+					}
+
+					document.addEventListener('click', function(e) {
+						if (!dropdown.contains(e.target)) {
+							dropdownContent.style.display = 'none';
+						}
+					});
+				}
+			});
+		}
+
+		// 搜索按钮处理
+		const searchSubmit = document.querySelector('.serch-form .submit');
+		if (searchSubmit) {
+			searchSubmit.addEventListener('click', function(e) {
+				const input = document.querySelector('.serch-form .search');
+				if (!input.value.trim()) {
+					e.preventDefault();
+					alert('请输入搜索内容');
+				}
+			});
+		}
+
+		// 切换背景按钮处理
+		const changeBgBtn = document.querySelector('#tool .c4');
+		if (changeBgBtn) {
+			changeBgBtn.addEventListener('click', function() {
+				playClickSound().then(() => {
+					if (typeof changeBg === 'function') {
+						changeBg();
+					} else {
+						document.body.classList.toggle('day');
+						document.body.classList.toggle('night');
+					}
+				});
+			});
+		}
+
+		// 初始化
+		checkAudioAvailability();
+		initDropdownMenus();
+	});
+</script>
+<!-- 头部导航 -->
+<nav class="header">
+    <div class="contain">
+        <!-- logo区 -->
+        <a href="./index.html" class="logo"></a>
+        <!-- 列表 -->
+        <ul>
+            <li><a href="./index.html">首页</a></li>
+            <li class="dropdown">
+                <a href="./movie.html" class="dropbtn">电影</a>
+                <div class="dropdown-content">
+                    <a href="category_Action.html">动作片</a>
+                    <a href="category_Comedy.html">喜剧片</a>
+                    <a href="category_Romance.html">爱情片</a>
+                    <a href="category_Sci-fic.html">科幻片</a>
+                </div>
+            </li>
+            <li><a href="./cinema.html">影院</a></li>
+            <li class="dropdown">
+                <a href="./liuyan.html" class="dropbtn">反馈</a>
+                <div class="dropdown-content">
+                    <a href="liuyan_tel.html">电话客服</a>
+                    <a href="liuyan.html">系统留言</a>
+                    <a href="liuyan_feedback.html">意见反馈</a>
+                    <a href="liuyan_about.html">关于我们</a>
+                </div>
+            </li>
+            <li><a href="./mall.html">商城</a></li>
+        </ul>
+        <!-- 用户登入 -->
+        <div class="userinfo">
+            <img src="./img/userifo.png" alt="用户">
+            <a href="./login.html" style="margin-left: 20px;">登录</a>
+        </div>
+        <!-- 搜索区 -->
+        <form action="#" class="serch-form" method="POST">
+            <input type="search" class="search" placeholder="找影视剧 影人 影院">
+            <input type="submit" class="submit" value="">
+        </form>
+        <!-- app下载 -->
+        <div class="appdownload">
+            <a href="#">
+                <span class="iphone-icon"></span>
+                <span class="apptext">app下载</span>
+                <span class="caret"></span>
+                <div class="downloadicon">
+                    <p class="down-title">扫码下载app</p>
+                    <p class="down-content">选座更优惠</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</nav>
+
+    <!-- 商家入驻 -->
+    <div class="merchant">
+        <a href="#">商家入驻</a>
+    </div>
+
+<!-- 商品区域 -->
+<div class="product clearfix">
+
+    <!-- 1 号商品 -->
+    <div class="goods-itom">
+        <a href="#">
+            <div class="magnifier-container">
+                <img src="./img/goods1.jpg" alt="名侦探柯南绀青之拳组合戒指" class="product-img">
+                <div class="magnifier-glass"></div>
+                <div class="magnified-img-container"></div>
+            </div>
+            <p class="product-info">名侦探柯南&nbsp;绀青之拳组合戒指</p>
+            <p><strong>$110</strong><span>$150</span></p>
+        </a>
+    </div>
+
+    <!-- 2 号商品 -->
+    <div class="goods-itom">
+        <a href="#">
+            <div class="magnifier-container">
+                <img src="./img/goods2.jpg" alt="哆啦A梦孵化仓盲盒" class="product-img">
+                <div class="magnifier-glass"></div>
+                <div class="magnified-img-container"></div>
+            </div>
+            <p class="product-info">哆啦A梦孵化仓盲盒</p>
+            <p><strong>$199</strong><span>$278</span></p>
+        </a>
+    </div>
+
+    <!-- 3 号商品 -->
+    <div class="goods-itom">
+        <a href="#">
+            <div class="magnifier-container">
+                <img src="./img/goods3.jpg" alt="复活节的史努比 收藏手办" class="product-img">
+                <div class="magnifier-glass"></div>
+                <div class="magnified-img-container"></div>
+            </div>
+            <p class="product-info">复活节的史努比&nbsp;收藏手办</p>
+            <p><strong>$50</strong><span>$271</span></p>
+        </a>
+    </div>
+
+    <!-- 4 号商品 -->
+    <div class="goods-itom">
+        <a href="#">
+            <div class="magnifier-container">
+                <img src="./img/goods4.jpg" alt="捧花的史努比 收藏手办" class="product-img">
+                <div class="magnifier-glass"></div>
+                <div class="magnified-img-container"></div>
+            </div>
+            <p class="product-info">捧花的史努比&nbsp;收藏手办</p>
+            <p><strong>$47</strong><span>$186</span></p>
+        </a>
+    </div>
+
+    <!-- 5 号商品 -->
+    <div class="goods-itom">
+        <a href="#">
+            <div class="magnifier-container">
+                <img src="./img/goods5.jpg" alt="史努比与南瓜 收藏手办" class="product-img">
+                <div class="magnifier-glass"></div>
+                <div class="magnified-img-container"></div>
+            </div>
+            <p class="product-info">史努比与南瓜&nbsp;收藏手办</p>
+            <p><strong>$43</strong><span>$176</span></p>
+        </a>
+    </div>
+
+    <!-- 6 号商品 -->
+    <div class="goods-itom">
+        <a href="#">
+            <div class="magnifier-container">
+                <img src="./img/goods6.jpg" alt="月亮中的史努比 收藏手办" class="product-img">
+                <div class="magnifier-glass"></div>
+                <div class="magnified-img-container"></div>
+            </div>
+            <p class="product-info">月亮中的史努比&nbsp;收藏手办</p>
+            <p><strong>$40</strong><span>$160</span></p>
+        </a>
+    </div>
+
+    <!-- 7 号商品 -->
+    <div class="goods-itom">
+        <a href="#">
+            <div class="magnifier-container">
+                <img src="./img/goods7.jpg" alt="嘻哈宽松熊猫刺绣棒球服夹克衫" class="product-img">
+                <div class="magnifier-glass"></div>
+                <div class="magnified-img-container"></div>
+            </div>
+            <p class="product-info">嘻哈宽松熊猫刺绣棒球服夹克衫</p>
+            <p><strong>$100</strong><span>$450</span></p>
+        </a>
+    </div>
+
+    <!-- 8 号商品 -->
+    <div class="goods-itom">
+        <a href="#">
+            <div class="magnifier-container">
+                <img src="./img/goods8.jpg" alt="按压自动充气旅行便携U型枕头" class="product-img">
+                <div class="magnifier-glass"></div>
+                <div class="magnified-img-container"></div>
+            </div>
+            <p class="product-info">按压自动充气旅行便携U型枕头</p>
+            <p><strong>$25</strong><span>$290</span></p>
+        </a>
+    </div>
+
+    <!-- 9 号商品 -->
+    <div class="goods-itom">
+        <a href="#">
+            <div class="magnifier-container">
+                <img src="./img/goods9.jpg" alt="招财猫耳记忆棉旅行U型颈枕" class="product-img">
+                <div class="magnifier-glass"></div>
+                <div class="magnified-img-container"></div>
+            </div>
+            <p class="product-info">招财猫耳记忆棉旅行U型颈枕</p>
+            <p><strong>$20</strong><span>$150</span></p>
+        </a>
+    </div>
+
+</div>
+    <!-- 选择区开始 -->
+    <div class="pager">
+        <a href="">上一页</a>
+        <a href="" class="select">1</a>
+        <a href="">2</a>
+        <a href="">3</a>
+        <a href="">4</a>
+        <a href="">5</a>
+        <a href="">6</a>
+        <a href="">7</a>
+        <a href="">8</a>
+        <a href="">9</a>
+        <a href="">10</a>
+        <a href="">下一页</a>
+    </div>
+    <!-- 选择区结束 -->
+    <!-- 底部开始 -->
+    <div class="footer">
+        <p>商务合作邮箱：v@longteng.com 客服电话：10105335 违法和不良信息举报电话：4006019900 </p>
+        <p>用户投诉邮箱：tousujubao@meituan.com 舞弊线索举报邮箱：wubijubao@longteng.com </p>
+        <p>
+            <a>中华人民共和国增值电信业务经营许可证 京B2-20190350 </a>
+            <span>|</span>
+            <a> 营业性演出许可证 京演（机构）（2024）4094号</a>
+        </p>
+
+        <p>
+            <a>广播电视节目制作经营许可证 （京）字第08478号 </a>
+            <span>|</span>
+            <a> 网络文化经营许可证 京网文（2024）3837-369号</a>
+        </p>
+        <p>
+            <a>用户服务协议 </a>
+            <span>|</span>
+            <a> 平台交易规则总则</a>
+            <span>|</span>
+            <a>隐私政策</a>
+        </p>
+        <p><a>京公网安备 11010102003232号</a></p>
+        <p>文化传媒有限公司</p>
+        <p>©2024 电影 longteng.com</p>
+        <p class="last">
+            <a><img src="./img/network.png" alt=""></a>
+            <a><img src="./img/license.png" alt=""></a>
+        </p>
+    </div>
+        <!-- 底部结束 -->
+        <script src="js/mall.js"></script>
+
+</body>
+</html>

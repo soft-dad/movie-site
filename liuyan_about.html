@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>关于我们 - 龙腾电影</title>
+    <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/common.css">
+    <style>
+        body{background:#f5f7fa;padding-top:100px}
+        .about-wrap{max-width:800px;margin:0 auto;background:#fff;border-radius:12px;box-shadow:0 4px 18px rgba(0,0,0,.08);padding:40px 50px}
+        .about-wrap h2{color:#042A8F;margin-bottom:20px;font-size:24px}
+        .about-wrap p{line-height:1.8;color:#333;margin-bottom:15px}
+        .about-wrap .highlight{color:#f03d37;font-weight:700}
+        .footer{margin-top:60px}
+    </style>
+</head>
+<body class="day">
+
+<!-- 音频 -->
+<audio id="backgroundMusic" loop><source src="music/background_music.mp3" type="audio/mpeg"></audio>
+<audio id="clickSound" preload="auto"><source src="music/click.mp3" type="audio/mpeg"></audio>
+<button id="musicToggle" style="position:fixed;top:100px;right:20px;z-index:1000;padding:10px;cursor:pointer;background:rgba(0,0,0,.5);color:#fff;border:none;border-radius:5px;">🔊 播放音乐</button>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const music = document.getElementById('backgroundMusic');
+        const toggleButton = document.getElementById('musicToggle');
+        const clickSound = document.getElementById('clickSound');
+        const SOUND_MIN_DURATION = 200;
+
+        // 简化的音频检查函数
+        function checkAudioAvailability() {
+            // 检查背景音乐
+            if (music.error) {
+                console.error('背景音乐错误:', music.error);
+                toggleButton.textContent = '🔊 音乐文件错误';
+            }
+
+            // 检查点击音效
+            if (clickSound.error) {
+                console.error('点击音效错误:', clickSound.error);
+            }
+        }
+
+        // 播放点击音效的简化版本
+        function playClickSound() {
+            return new Promise(resolve => {
+                // 无论如何都在最短时间后resolve，确保交互不卡顿
+                setTimeout(resolve, SOUND_MIN_DURATION);
+
+                // 尝试播放音效
+                if (clickSound && clickSound.readyState >= 2) {
+                    clickSound.currentTime = 0;
+                    clickSound.play().catch(e => console.log('音效播放失败:', e));
+                }
+            });
+        }
+
+        // 背景音乐控制
+        toggleButton.addEventListener('click', function() {
+            // 先播放点击音效，再切换背景音乐状态
+            playClickSound().then(() => {
+                if (music.paused) {
+                    music.play()
+                        .then(() => toggleButton.textContent = '🔇 关闭音乐')
+                        .catch(e => {
+                            console.log('音乐播放失败:', e);
+                            alert('音乐播放失败，请检查文件是否存在');
+                        });
+                } else {
+                    music.pause();
+                    toggleButton.textContent = '🔊 播放音乐';
+                }
+            });
+        });
+
+        // 为所有可点击元素添加音效
+        document.querySelectorAll('a, button, input[type="button"], input[type="submit"]').forEach(element => {
+            // 排除音乐按钮，因为已经单独处理
+            if (element.id !== 'musicToggle') {
+                element.addEventListener('click', function(e) {
+                    // 对链接特殊处理，防止立即跳转
+                    if (this.tagName === 'A' && this.href && !this.href.includes('#')) {
+                        e.preventDefault();
+                        const href = this.href;
+                        const target = this.target;
+
+                        playClickSound().then(() => {
+                            if (target === '_blank') {
+                                window.open(href, '_blank');
+                            } else {
+                                window.location.href = href;
+                            }
+                        });
+                    } else {
+                        // 普通按钮只播放音效
+                        playClickSound();
+                    }
+                });
+            }
+        });
+
+        // 初始化下拉菜单（保留原有功能）
+        function initDropdownMenus() {
+            const dropdowns = document.querySelectorAll('.dropdown');
+
+            dropdowns.forEach(dropdown => {
+                const dropbtn = dropdown.querySelector('.dropbtn');
+                const dropdownContent = dropdown.querySelector('.dropdown-content');
+
+                if (dropbtn && dropdownContent) {
+                    const dropdownItems = dropdownContent.querySelectorAll('a');
+                    dropdownItems.forEach(item => {
+                        item.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            const href = this.getAttribute('href');
+                            playClickSound().then(() => {
+                                window.location.href = href;
+                            });
+                        });
+                    });
+
+                    if (window.innerWidth < 768) {
+                        dropbtn.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+                        });
+                    }
+
+                    document.addEventListener('click', function(e) {
+                        if (!dropdown.contains(e.target)) {
+                            dropdownContent.style.display = 'none';
+                        }
+                    });
+                }
+            });
+        }
+
+        // 搜索按钮处理
+        const searchSubmit = document.querySelector('.serch-form .submit');
+        if (searchSubmit) {
+            searchSubmit.addEventListener('click', function(e) {
+                const input = document.querySelector('.serch-form .search');
+                if (!input.value.trim()) {
+                    e.preventDefault();
+                    alert('请输入搜索内容');
+                }
+            });
+        }
+
+        // 切换背景按钮处理
+        const changeBgBtn = document.querySelector('#tool .c4');
+        if (changeBgBtn) {
+            changeBgBtn.addEventListener('click', function() {
+                playClickSound().then(() => {
+                    if (typeof changeBg === 'function') {
+                        changeBg();
+                    } else {
+                        document.body.classList.toggle('day');
+                        document.body.classList.toggle('night');
+                    }
+                });
+            });
+        }
+
+        // 初始化
+        checkAudioAvailability();
+        initDropdownMenus();
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+        const tabs = document.querySelectorAll('.tab');
+        const contents = document.querySelectorAll('.tab-content');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function (e) {
+                e.preventDefault(); // 阻止默认跳转
+
+                const target = this.dataset.target;
+
+                // 切换标签样式
+                tabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+
+                // 切换内容显示
+                contents.forEach(c => c.classList.remove('active'));
+                const targetContent = document.getElementById(target);
+                if (targetContent) {
+                    targetContent.classList.add('active');
+                }
+            });
+        });
+    });
+
+</script>
+<nav class="header">
+       <!-- 同上，省略 -->
+<div class="contain">
+        <a href="./index.html" class="logo"></a>
+        <ul>
+            <li><a href="./index.html">首页</a></li>
+            <li class="dropdown">
+                <a href="./movie.html" class="dropbtn">电影</a>
+                <div class="dropdown-content">
+                    <a href="category_Action.html">动作片</a>
+                    <a href="category_Comedy.html">喜剧片</a>
+                    <a href="category_Romance.html">爱情片</a>
+                    <a href="category_Sci-fic.html">科幻片</a>
+                </div>
+            </li>
+            <li><a href="./cinema.html">影院</a></li>
+            <li class="dropdown">
+                <a href="./liuyan.html" class="dropbtn">反馈</a>
+                <div class="dropdown-content">
+                    <a href="liuyan_tel.html">电话客服</a>
+                    <a href="liuyan.html">系统留言</a>
+                    <a href="liuyan_feedback.html">意见反馈</a>
+                    <a href="liuyan_about.html">关于我们</a>
+                </div>
+            </li>
+            <li><a href="./mall.html">商城</a></li>
+        </ul>
+        <div class="userinfo">
+            <img src="./img/userifo.png" alt="用户">
+            <a href="./login.html" style="margin-left: 20px;">登录</a>
+        </div>
+        <form action="#" class="serch-form" method="POST">
+            <input type="search" class="search" placeholder="找影视剧 影人 影院">
+            <input type="submit" class="submit" value="">
+        </form>
+        <div class="appdownload">
+            <a href="#">
+                <span class="iphone-icon"></span>
+                <span class="apptext">app下载</span>
+                <span class="caret"></span>
+                <div class="downloadicon">
+                    <p class="down-title">扫码下载app</p>
+                    <p class="down-content">选座更优惠</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="about-wrap">
+    <h2>关于我们</h2>
+    <p>CC电影（CongCong.com）成立于 2014 年，致力于为用户提供<span class="highlight">在线选座、实时影讯、正版周边</span>的一站式观影服务。</p>
+    <p>目前业务已覆盖全国 <span class="highlight">260+</span>  城市，合作影院 <span class="highlight">1,200+</span>  家，日均服务用户超 <span class="highlight">100 万</span> 。</p>
+    <p>我们始终秉持“好电影，更优惠”的理念，持续优化购票体验，推动中国观影文化升级。</p>
+    <p>旗下业务板块：</p>
+    <ul style="margin-left:20px;line-height:1.8">
+        <li>在线选座购票（支持 IMAX、杜比、4DX 等特效厅）</li>
+        <li>正版电影周边商城（手办、潮玩、服饰）</li>
+        <li>影迷社区（影评、打分、互动活动）</li>
+        <li>影院 SaaS 系统（为影院提供智慧化解决方案）</li>
+    </ul>
+    <p>客服邮箱：v@longteng.com | 商务合作：business@longteng.com</p>
+</div>
+
+<div class="footer">…</div>
+</body>
+</html>

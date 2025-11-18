@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/index.css">
+    <link rel="stylesheet" href="css/movie.css">
+    <link rel="stylesheet" href="./css/common.css">
+    <title>电影分类-喜剧片</title>
+</head>
+
+<body class="day">
+<!-- ===== 背景音乐 & 点击音效（原样保留） ===== -->
+<audio id="backgroundMusic" loop>
+    <source src="./music/background_music.mp3" type="audio/mpeg">
+    您的浏览器不支持音频播放。
+</audio>
+<audio id="clickSound" preload="auto">
+    <source src="./music/click.mp3" type="audio/mpeg">
+</audio>
+<button id="musicToggle" style="
+    position: fixed; top: 100px; right: 20px; z-index: 1000;
+    padding: 10px; cursor: pointer; background-color: rgba(0,0,0,0.5);
+    color: white; border: none; border-radius: 5px;
+">🔊 播放音乐</button>
+<script>
+    const music = document.getElementById('backgroundMusic');
+    const toggleButton = document.getElementById('musicToggle');
+    const clickSound = document.getElementById('clickSound');
+    function checkMusicStatus() {
+        const isPlaying = localStorage.getItem('musicPlaying') === 'true';
+        if (isPlaying) {
+            music.play().then(() => {
+                toggleButton.textContent = '🔇 关闭音乐';
+            }).catch(() => {
+                localStorage.setItem('musicPlaying', 'false');
+                toggleButton.textContent = '🔊 播放音乐';
+            });
+        } else {
+            toggleButton.textContent = '🔊 播放音乐';
+        }
+    }
+    function toggleMusic() {
+        if (music.paused) {
+            music.play().then(() => {
+                toggleButton.textContent = '🔇 关闭音乐';
+                localStorage.setItem('musicPlaying', 'true');
+            }).catch(() => {
+                toggleButton.textContent = '🔊 请点击我播放音乐';
+            });
+        } else {
+            music.pause();
+            toggleButton.textContent = '🔊 播放音乐';
+            localStorage.setItem('musicPlaying', 'false');
+        }
+    }
+    function playClickSound() {
+        try {
+            clickSound.currentTime = 0;
+            clickSound.play().catch(() => {});
+        } catch {}
+    }
+    function initGlobalClickSound() {
+        document.addEventListener('mousedown', playClickSound, { capture: true });
+        const observer = new MutationObserver(mutations => {
+            mutations.forEach(mutation => {
+                mutation.addedNodes.forEach(node => {
+                    if (node.nodeType === 1) {
+                        node.addEventListener('mousedown', playClickSound, { capture: true });
+                    }
+                });
+            });
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        checkMusicStatus();
+        toggleButton.addEventListener('click', toggleMusic);
+        initGlobalClickSound();
+    });
+</script>
+
+<!-- ================= 头部导航 ================= -->
+<nav class="header">
+    <div class="contain">
+        <a href="#" class="logo"></a>
+        <ul>
+            <li><a href="./index.html">首页</a></li>
+            <li class="dropdown">
+                <a href="./movie.html" class="dropbtn">电影</a>
+                <div class="dropdown-content">
+                    <a href="category_Action.html">动作片</a>
+                    <a href="category_Comedy.html">喜剧片</a>
+                    <a href="category_Romance.html">爱情片</a>
+                    <a href="category_Sci-fic.html">科幻片</a>
+                </div>
+            </li>
+            <li><a href="./cinema.html">影院</a></li>
+            <li class="dropdown">
+                <a href="./liuyan.html" class="dropbtn">反馈</a>
+                <div class="dropdown-content">
+                    <a href="">电话客服</a>
+                    <a href="">系统留言</a>
+                    <a href="">意见反馈</a>
+                    <a href="">关于我们</a>
+                </div>
+            </li>
+            <li><a href="./mall.html">商城</a></li>
+        </ul>
+        <div class="userinfo">
+            <img src="./img/userifo.png" alt="用户">
+            <a href="./login.html" style="margin-left: 20px;">登录</a>
+        </div>
+        <form action="#" class="serch-form" method="POST">
+            <input type="search" class="search" placeholder="找影视剧 影人 影院">
+            <input type="button" class="submit" value="">
+        </form>
+        <div class="appdownload">
+            <a href="#">
+                <span class="iphone-icon"></span>
+                <span class="apptext">app下载</span>
+                <span class="caret"></span>
+                <div class="downloadicon">
+                    <p class="down-title">扫码下载app</p>
+                    <p class="down-content">选座更优惠</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- ================= 主体区域（无 Tab、无筛选） ================= -->
+<div class="main">
+    <div class="container">
+        <div style="text-align:center; font-size:18px; color:#333; padding:10px ;">科幻片</div>
+        <div class="movies">
+            <!-- 12 部喜剧片示例数据 -->
+            <div class="movie-item">
+                <div class="poster"><a href=""><img src="./img/mov4.jpg" alt=""></a></div>
+                <div class="name"><a href="">朝云慕雪</a></div>
+                <div class="buy-ticket">购票</div>
+                <div class="score">8.2</div>
+            </div>
+            <div class="movie-item">
+                <div class="poster"><a href=""><img src="./img/mov9.jpg" alt=""></a></div>
+                <div class="name"><a href="">大圣归来</a></div>
+                <div class="buy-ticket">购票</div>
+                <i class="d2max"></i>
+                <div class="score">7.9</div>
+            </div>
+            <div class="movie-item">
+                <div class="poster"><a href=""><img src="./img/mov7.jpg" alt=""></a></div>
+                <div class="name"><a href="">冰雪奇缘2</a></div>
+                <div class="buy-ticket">购票</div>
+                <div class="score">8.1</div>
+            </div>
+            <div class="movie-item">
+                <div class="poster"><a href=""><img src="./img/mov1.jpg" alt=""></a></div>
+                <div class="name"><a href="">野孩子</a></div>
+                <div class="buy-ticket">购票</div>
+                <div class="score">7.5</div>
+            </div>
+            <div class="movie-item">
+                <div class="poster"><a href=""><img src="./img/mov6.jpg" alt=""></a></div>
+                <div class="name"><a href="">你的名字</a></div>
+                <div class="buy-ticket">购票</div>
+                <i class="d3max"></i>
+                <div class="score">7.8</div>
+            </div>
+            <div class="movie-item">
+                <div class="poster"><a href=""><img src="./img/mov5.jpg" alt=""></a></div>
+                <div class="name"><a href="">门锁</a></div>
+                <div class="score">6.9</div>
+            </div>
+            <div class="movie-item">
+                <div class="poster"><a href=""><img src="./img/mov3.jpg" alt=""></a></div>
+                <div class="name"><a href="">默杀</a></div>
+                <div class="buy-ticket">购票</div>
+                <i class="d3max"></i>
+                <div class="score">8.3</div>
+            </div>
+            <div class="movie-item">
+                <div class="poster"><a href=""><img src="./img/mov11.jpg" alt=""></a></div>
+                <div class="name"><a href="">少年的你</a></div>
+                <div class="buy-ticket">购票</div>
+                <div class="score">8.5</div>
+            </div>
+            <div class="movie-item">
+                <div class="poster"><a href=""><img src="./img/mov2.jpg" alt=""></a></div>
+                <div class="name"><a href="">孤注一掷</a></div>
+                <div class="buy-ticket">购票</div>
+                <div class="score">7.9</div>
+            </div>
+            <div class="movie-item">
+                <div class="poster"><a href=""><img src="./img/mov10.jpg" alt=""></a></div>
+                <div class="name"><a href="">中国机长</a></div>
+                <div class="buy-ticket">购票</div>
+                <i class="d2max"></i>
+                <div class="score">8.4</div>
+            </div>
+            <div class="movie-item">
+                <div class="poster"><a href=""><img src="./img/mov8.jpg" alt=""></a></div>
+                <div class="name"><a href="">战狼</a></div>
+                <div class="buy-ticket">购票</div>
+                <div class="score">7.7</div>
+            </div>
+            <div class="movie-item">
+                <div class="poster"><a href=""><img src="./img/mov12.jpg" alt=""></a></div>
+                <div class="name"><a href="">一生有你</a></div>
+                <div class="buy-ticket">购票</div>
+                <div class="score">7.3</div>
+            </div>
+        </div>
+        <!-- 分页按钮 -->
+        <div class="pager"></div>
+    </div>
+</div>
+
+<!-- ================= 底栏 ================= -->
+<div class="footer">
+    <p>商务合作邮箱：v@longteng.com 客服电话：10105335 违法和不良信息举报电话：4006019900</p>
+    <p>用户投诉邮箱：tousujubao@meituan.com 舞弊线索举报邮箱：wubijubao@longteng.com</p>
+    <p><a>中华人民共和国增值电信业务经营许可证 京B2-20190350</a><span>|</span><a>营业性演出许可证 京演（机构）（2024）4094号</a></p>
+    <p><a>广播电视节目制作经营许可证 （京）字第08478号</a><span>|</span><a>网络文化经营许可证 京网文（2024）3837-369号</a></p>
+    <p><a>用户服务协议</a><span>|</span><a>平台交易规则总则</a><span>|</span><a>隐私政策</a></p>
+    <p><a>京公网安备 11010102003232号</a></p>
+    <p>©2024 电影 longteng.com</p>
+    <p class="last"><a><img src="./img/network.png" alt=""></a><a><img src="./img/license.png" alt=""></a></p>
+</div>
+
+<!-- ================= 业务脚本（喜剧片数据池 + 分页） ================= -->
+<script>
+    /* ===== 分页数据池（喜剧片） ===== */
+    const movieData = {
+        1: [],
+        2: [
+            {img:'mov1_2.jpg',  name:'欢乐喜剧人', score:'7.6'},
+            {img:'mov2_2.jpg',  name:'胖子行动队', score:'6.8'},
+            {img:'mov3_2.jpg',  name:'鼠胆英雄', score:'7.2'},
+            {img:'mov4_2.jpg', name:'妖铃铃', score:'6.4'},
+            {img:'mov5_2.jpg', name:'断片之险途夺宝', score:'5.9'},
+            {img:'mov6_2.jpg', name:'天气预爆', score:'6.5'},
+            {img:'mov7_2.jpg', name:'日不落酒店', score:'6.2'},
+            {img:'mov8_2.jpg', name:'温暖的抱抱', score:'7.3'},
+            {img:'mov9_2.jpg', name:'发财日记', score:'7.0'},
+            {img:'mov10_2.jpg', name:'超能一家人', score:'7.5'},
+            {img:'mov11_2.jpg', name:'交换人生', score:'7.4'},
+            {img:'mov12_2.jpg', name:'保你平安', score:'8.0'}
+        ],
+        3: [
+            {img:'mov1_3.jpg', name:'独行月球', score:'8.1'},
+            {img:'mov2_3.jpg', name:'哥，你好', score:'7.7'},
+            {img:'mov3_3.jpg', name:'东北恋哥', score:'7.1'},
+            {img:'mov4_3.jpg', name:'绝望主夫', score:'6.6'},
+            {img:'mov5_3.jpg', name:'抬头见喜', score:'6.9'},
+            {img:'mov6_3.jpg', name:'请别相信她', score:'7.0'},
+            {img:'mov7_3.jpg', name:'人生路不熟', score:'7.8'},
+            {img:'mov8_3.jpg', name:'检察风云', score:'7.3'},
+            {img:'mov9_3.jpg', name:'倍儿喜欢你', score:'6.5'},
+            {img:'mov10_3.jpg', name:'宇宙探索编辑部', score:'8.3'},
+            {img:'mov11_3.jpg', name:'好像也没那么热血沸腾', score:'7.9'},
+            {img:'mov12_3.jpg', name:'二手杰作', score:'7.6'}
+        ]
+    };
+
+    /* ===== 一键替换函数 ===== */
+    function fillMovies(page) {
+        const pool = movieData[page];
+        if (!pool || pool.length === 0) return;
+        const items = document.querySelectorAll('.movies .movie-item');
+        pool.forEach((d, i) => {
+            const item = items[i]; if (!item) return;
+            item.querySelector('img').src = 'img/' + d.img;
+            item.querySelector('.name a').textContent = d.name;
+            const scoreBox = item.querySelector('.score');
+            if (scoreBox) scoreBox.textContent = d.score;
+        });
+    }
+    (function(){
+        const p = new URLSearchParams(location.search).get('page') || '1';
+        fillMovies(parseInt(p));
+    })();
+</script>
+
+<!-- ========= 分页生成器（已修正 baseFile） ========= -->
+<script>
+    (function () {
+        const totalPages = 3;
+        const pageParam  = 'page';
+        const baseFile   = './category_Sci-fic.html';   // ⚠️ 关键修正
+
+        function getCurrentPage() {
+            const params = new URLSearchParams(location.search);
+            const p = parseInt(params.get(pageParam)) || 1;
+            return Math.max(1, Math.min(p, totalPages));
+        }
+
+        function renderOnePager(pager) {
+            if (!pager) return;
+            const current = getCurrentPage();
+            pager.innerHTML = '';
+
+            const prev = document.createElement('a');
+            prev.href = current === 1 ? '#' : `${baseFile}?${pageParam}=${current - 1}`;
+            prev.textContent = '上一页';
+            if (current === 1) prev.style.pointerEvents = 'none';
+            pager.appendChild(prev);
+
+            for (let i = 1; i <= totalPages; i++) {
+                const a = document.createElement('a');
+                a.href = `${baseFile}?${pageParam}=${i}`;
+                a.textContent = i;
+                if (i === current) a.classList.add('select');
+                pager.appendChild(a);
+            }
+
+            const next = document.createElement('a');
+            next.href = current === totalPages ? '#' : `${baseFile}?${pageParam}=${current + 1}`;
+            next.textContent = '下一页';
+            if (current === totalPages) next.style.pointerEvents = 'none';
+            pager.appendChild(next);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.pager').forEach(renderOnePager);
+        });
+    })();
+</script>
+
+</body>
+</html>

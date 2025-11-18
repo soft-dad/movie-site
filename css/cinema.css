@@ -1,0 +1,142 @@
+.clearfix::after {
+    content: "";
+    display: block;
+    clear: both;
+}
+.main {
+    line-height: 1.5;
+    margin-top: 110px;
+}
+.main .container {
+    width: 1120px;
+    margin: 0 auto;
+}
+/* 影城选择区开始 */
+.main .container .choose-area {
+    border: 1px solid #e5e5e5;
+    margin: 40px 0;
+    font-size: 14px;
+    line-height: 30px;
+    padding: 0 30px;
+}
+
+.main .container .choose-area .choose-item {
+    margin: 1em 0;
+    border-bottom: 1px dotted #e5e5e5;
+}
+
+.main .container .choose-area .choose-item.no-line {
+    border: none;
+}
+
+.main .container .choose-area .choose-item .left {
+    float: left;
+    color: #999;
+}
+
+.main .container .choose-area .choose-item .right {
+    float: left;
+    width: 1010px;
+}
+
+.main .container .choose-area .choose-item .right li {
+    float: left;
+    margin: 0 9px;
+    padding: 0 6px;
+}
+
+.main .container .choose-area .choose-item .right li a:hover {
+    color: #8aa6f3;
+}
+
+.main .container .choose-area .choose-item .right li.select {
+    background: #8aa6f3;
+    color: #fff;
+    /* CSS3 圆角边框 */
+    border-radius: 15px;
+}
+/* 影城选择区结束 */
+
+/* 影城选择区开始 */
+.cinema-list .cinema-list-header {
+    font-size: 18px;
+    color: #333;
+    border-left: 4px solid #8aa6f3;
+    padding-left: 6px;
+    line-height: 18px;
+}
+.cinema-list .cinema-cell {
+    display: block;
+    padding: 20px 0;
+    border-bottom: 1px dashed#e5e5e5;
+}
+
+.cinema-list .cinema-cell .cinema-info {
+    display: inline-block;
+}
+
+.cinema-list .cinema-cell .cinema-info .cinema-name {
+    display: inline-block;
+    font-size: 16px;
+    line-height: 18px;
+    color:#333;
+    margin-bottom: 10px;
+}
+
+.cinema-list .cinema-cell .cinema-info a:hover {
+    color:#8aa6f3;
+}
+.cinema-list .cinema-cell .cinema-info .cinema-address {
+    font-size: 14px;
+    line-height: 14px;
+    color: #999;
+}
+.cinema-list .cinema-cell .buy-btn {
+    width: 80px;
+    height: 45px;
+    line-height: 45px;
+    margin-left: 24px;
+}
+.cinema-list .cinema-cell .buy-btn a {
+    display: inline-block;
+    width: 100%;
+    height: 30px;
+    color:#fff;
+    background-color:#042a8f;
+    font-size: 14px;
+    line-height: 30px;
+    border-radius: 100px;
+    text-align: center;
+}
+.cinema-list .cinema-cell .buy-btn a:hover {
+    background-color: #8aa6f3;
+}
+
+.cinema-list .cinema-cell .price {
+    font-size: 12px;
+    color:#999;
+    height: 45px;
+    line-height: 45px;
+}
+
+.cinema-list .cinema-cell .price .rmb {
+    margin-right: -4px;
+    color: #8aa6f3;
+}
+
+.cinema-list .cinema-cell .price .price-num {
+    font-size: 16px;
+    margin-right: -3px;
+    font-weight: 700;
+    color: #042a8f;
+}
+/* 影城选择区结束 */
+
+
+
+
+
+
+
+
+

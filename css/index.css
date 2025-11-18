@@ -1,0 +1,534 @@
+.iconfont {
+	font-family: "iconfont" !important;
+	font-size: 16px;
+	font-style: normal;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+/* 公共样式开始 */
+.contain {
+	width: 1230px;
+	/* margin-top: 60px; */
+	margin: 0 auto;
+}
+
+/* 公共样式结束 */
+/* 横幅广告开始 */
+.canner-wrap {
+	position: relative;
+	width: 80%;
+	margin: auto;
+	/* overflow: hidden; */
+	float: left;
+}
+
+.canner {
+	position: relative;
+	text-align: center;
+	float: left;
+	margin-top: 100px;
+	width: 100%;
+	height: 450px;
+	margin-left: 150px;
+	margin-bottom: 30px;
+}
+
+#largeImage {
+	width: 1225px;
+	height: auto;
+	float: left;
+	height: 450px;
+}
+
+.thumbnails {
+	display: flex;
+	justify-content: center;
+	margin-top: -335px;
+	float: right;
+	flex-direction: column;
+	margin-right: 40px;
+	/* 如果缩略图不多，保持垂直排列 */
+}
+
+.thumb {
+	width: 100px;
+	height: 40px;
+	margin: 0 5px;
+	cursor: pointer;
+	border: 2px solid transparent;
+	opacity: 0.8;
+	border-radius: 10px;
+}
+
+.thumb:hover {
+	border-color: #fff;
+}
+
+.left-arr {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	font-size: 2em;
+	cursor: pointer;
+	color: #fff;
+	background: rgba(36, 36, 36, 0.5);
+	padding: 5px;
+}
+
+.right-arr {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	font-size: 2em;
+	cursor: pointer;
+	color: #fff;
+	background: rgba(36, 36, 36, 0.5);
+	padding: 5px;
+	margin-right: -10px;
+}
+
+.left-arr {
+	left: 10px;
+}
+
+.right-arr {
+	right: 10px;
+}
+
+.choose-dot {
+	display: flex;
+	justify-content: center;
+	margin-top: -40px;
+	float: left;
+	margin-left: 500px;
+}
+
+.dot {
+	width: 10px;
+	height: 10px;
+	margin: 0 5px;
+	background: #ccc;
+	border-radius: 50%;
+	display: block;
+	cursor: pointer;
+}
+
+.dot.active {
+	background: #000;
+}
+
+/* 横幅广告介绍 */
+/* 主区域的右边开始 */
+#chief {
+	margin-top: 60px;
+}
+
+#chief .aside {
+	width: 360px;
+	height: 614px;
+	/* border: 1px solid red; */
+}
+
+#chief .aside .panel-title {
+	color: #ef4238;
+	font-size: 26px;
+	cursor: pointer;
+}
+
+#chief .panel-content {
+	width: 100%;
+	margin-top: 23px;
+}
+
+#chief .panel-content .ranking-item-top {
+	margin-bottom: 11px;
+	cursor: pointer;
+}
+
+#chief .panel-content .ranking-item-top .ranking-top-left {
+	width: 120px;
+	height: 78px;
+	float: left;
+	position: relative;
+	margin-right: 10px;
+}
+
+#chief .panel-content .ranking-item-top .ranking-top-left .ranking-top-icon {
+	width: 22px;
+	height: 25px;
+	position: absolute;
+	left: 0;
+	top: 0;
+	background-image: url("../img/ranking-top-icon.png");
+	background-size: contain;
+}
+
+#chief .panel-content .ranking-item-top .ranking-top-right {
+	height: 78px;
+	border: 1px solid #ccc;
+}
+
+#chief .panel-content .ranking-item-top .ranking-top-right:hover {
+	background-color: #ccc;
+}
+
+#chief .panel-content .ranking-item-top .ranking-top-right .movie-name {
+	color: #333;
+	font-size: 18px;
+	line-height: 1.4;
+	display: inline-block;
+	margin-top: 9px;
+}
+
+#chief .panel-content .ranking-item-top .ranking-top-right .movie-wish {
+	margin-top: 12px;
+	font-size: 14px;
+	color: #ef4238;
+}
+
+#chief .panel-content .ranking-item {
+	width: 360px;
+	height: 36.6px;
+	line-height: 36.6px;
+}
+
+#chief .panel-content .ranking-item:hover {
+	background: #f7f7f7;
+}
+
+#chief .panel-content .ranking-item .ranking-index {
+	color: #ef4238;
+	display: inline-block;
+	width: 20px;
+}
+
+#chief .panel-content .ranking-item .color-ccc {
+	color: #ccc;
+}
+
+#chief .panel-content .ranking-item .ranking-movie-name {
+	font-size: 16px;
+	color: #333;
+	vertical-align: top;
+}
+
+#chief .panel-content .ranking-item .stonefont {
+	float: right;
+	font-size: 14px;
+	color: #ef4238;
+}
+
+#chief .box-total-wrapper {
+	cursor: pointer;
+	margin-top: 32px;
+}
+
+#chief .box-total-wrapper>h3 {
+	width: 20px;
+	height: 83px;
+	padding: 10px;
+	color: #fff;
+	text-align: center;
+	line-height: 21px;
+	font-weight: 400;
+	font-size: 17px;
+	background-color: #042A8F;
+	float: left;
+}
+
+#chief .box-total-wrapper .bottom-left {
+	height: 102px;
+	width: 319px;
+	border: 1px solid #ccc;
+	border-left: none;
+}
+
+#chief .box-total-wrapper .bottom-left .num {
+	display: inline-block;
+	font-size: 22px;
+	font-weight: 100;
+	margin: 22px 130px 10px 22px;
+	color: #042A8F;
+}
+
+#chief .box-total-wrapper .bottom-left .more {
+	color: #042A8F;
+}
+
+#chief .box-total-wrapper .bottom-left .time {
+	margin: 0 10px 0 22px;
+	color: red;
+	font-size: 20px;
+	font-weight: 600;
+}
+
+#chief .box-total-wrapper .bottom-left .pull-right {
+	color: #999;
+	font-size: 10px;
+}
+
+/* 主区域的右边结束 */
+
+
+
+/* 主区域的左边开始 */
+.contain .main {
+	width: 801px;
+	height: 614px;
+	padding-right: 36px;
+	/* background: #ef4238; */
+	/* border: 1px solid red; */
+}
+
+.contain .main .panelhead {
+	width: 740px;
+	height: 26px;
+	font-size: 26px;
+	line-height: 26px;
+	color: #ef4238 !important;
+	cursor: pointer;
+}
+
+.contain .main .panelhead .more {
+	float: right;
+	font-size: 14px;
+	line-height: 16px;
+	margin-top: 10px;
+}
+
+.contain .main .panelhead .more a {
+	color: #ef4238;
+	cursor: pointer;
+}
+
+.contain .main .panel-content {
+	width: 100%;
+	margin-top: 23px;
+}
+
+.contain .main .panel-content .movies-list {
+	margin: -23px 0 20px -25px;
+}
+
+.contain .main .panel-content .movies-list .movie-item {
+	width: 161.1px;
+	/* height: 260.6px; */
+	border: 1px solid #efefef;
+	margin: 30px 0 0 30px;
+	display: inline-block;
+	vertical-align: top;
+	position: relative;
+}
+
+.contain .main .panel-content .movies-list .movie-item .movie-sale {
+	text-align: center;
+	height: 42px;
+	line-height: 39px;
+	color: #ef4238;
+}
+
+.contain .main .panel-content .movies-list .movie-item .movie-sale:hover {
+	color: #fff;
+	background-color: #ef4238;
+}
+
+.contain .main .panel-content .movies-list .movie-item .imax3d {
+	width: 69px;
+	height: 25px;
+	background: url("../img/3dmax.png");
+	background-size: contain;
+	position: absolute;
+	top: 4px;
+	left: -2px;
+	font-size: 12px;
+	color: #fff;
+}
+
+.contain .main .panel-content .movies-list .movie-item .integer {
+	position: absolute;
+	right: 12px;
+	bottom: 54px;
+	font-size: 18px;
+	color: #ffb400;
+}
+
+.contain .main .panel-content .movies-list .movie-item .integer span {
+	font-size: 14px;
+}
+
+.contain .main .panel-content .movies-list .movie-item .movietitle {
+	position: absolute;
+	left: 10px;
+	bottom: 54px;
+	color: #fff;
+	font-size: 16px;
+	line-height: 22px;
+}
+
+/* 主区域的左边结束 */
+
+/* 第二个主区域的左边开始 */
+.panelhead .textcolor-blue {
+	color: #2d98f3 !important;
+	cursor: pointer;
+}
+
+.panelhead a:hover {
+	text-decoration: underline;
+}
+
+.panelhead .more a {
+	color: #2d98f3;
+}
+
+.contain .main .panelhead .special2 {
+	font-size: 14px;
+	color: #333;
+	margin-left: 10px;
+	cursor: pointer;
+}
+
+.contain .aside .text-yellow {
+	color: #ffb400 !important;
+	margin-right: 140px;
+	cursor: pointer;
+}
+
+.contain .aside .see-com {
+	color: #ffb400 !important;
+	cursor: pointer;
+}
+
+.contain .main .panel-content .movies-list .movie-item-spec {
+	width: 350px;
+	height: 220px;
+}
+
+.movie-item .integer2 {
+	position: absolute;
+	right: 10px;
+	bottom: 6px;
+	font-size: 18px;
+	color: #ffb400;
+}
+
+.movie-item .integer2 span {
+	font-size: 14px;
+}
+
+.movie-item .movietitle2 {
+	position: absolute;
+	left: 6px;
+	bottom: 6px;
+	color: #fff;
+	font-size: 16px;
+	line-height: 22px;
+}
+
+/* 第二个主区域的左边结束 */
+
+
+/* 右侧导航开始 */
+#tool {
+	width: 50px;
+	height: 304px;
+	border: 1px solid #042A8F;
+	position: fixed;
+	top: 300px;
+	right: 3%;
+	border-radius: 8px;
+}
+
+#tool .bnt {
+	text-align: center;
+	position: relative;
+}
+
+.bnt .doll {
+	position: absolute;
+	top: -21px;
+	left: 10px;
+	font-size: 20px;
+	/* color:#008c8c; */
+}
+
+#tool .bnt a {
+	display: block;
+	width: 100%;
+	height: 50px;
+	/* line-height: 70px; */
+	text-align: center;
+	padding-top: 10px;
+	background: #fff;
+	border-bottom: 1px solid #ccc;
+}
+
+#tool .bnt .active {
+	border-radius: 8px 8px 0 0;
+	color: #fff;
+	background: #042A8F;
+	font-weight: bold;
+}
+
+#tool .bnt a:nth-child(6) {
+	border-bottom: none;
+	border-radius: 0 0 8px 8px;
+}
+
+#tool .bnt a:hover {
+	color: #fff;
+	background: #042A8F;
+	font-weight: bold;
+}
+
+
+/* 右侧导航接受 */
+
+/* 下拉菜单 */
+/* 下拉菜单样式 */
+.dropdown {
+	position: relative;
+	display: inline-block;
+}
+
+.dropdown-content {
+	display: none;
+	position: absolute;
+	background-color: #f9f9f9;
+	min-width: 100px;
+	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+	z-index: 1;
+	height: 140px;
+	line-height: 35px;
+	margin-left: -16px;
+}
+
+.dropdown-content a {
+	color: black;
+	text-decoration: none;
+	/* text-align: center; */
+	height: 35px;
+	display: block;
+	font-size: 14px;
+
+}
+
+.dropdown-content a:hover {
+	background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+	display: block;
+}
+
+body.day {
+	background-color: white;
+	color: black;
+}
+
+body.night {
+	background-color: rgb(30, 30, 30);
+	opacity: 0.8;
+	color: white;
+}

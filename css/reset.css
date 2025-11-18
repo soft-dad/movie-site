@@ -1,0 +1,94 @@
+/* CSS Document */
+*{
+	margin: 0;
+	padding: 0;
+}
+li{
+	list-style: none;
+}
+img{
+	border: none;
+	vertical-align: middle;
+}
+a{
+	text-decoration: none;
+	color: #3c3c3c;
+}
+em{
+	font-style: normal;
+	color: #f40;
+}
+button{
+	outline: none;
+}
+body{
+	font-family: Microsoft YaHei,Helvetica,Arial,sans-serif;
+	color: #3c3c3c;
+	background-color: #fff;
+}
+.clearfix{
+	content: "";
+	display: block;
+	clear: both;
+}
+.fl{
+	float: left;
+}
+.fr{
+	float: right;
+}
+.leayer{
+	width: 1190px;
+	margin: 0 auto;
+}
+.c1{
+	color:#8d7afb;
+}
+.c2{
+	color: #A8C001;
+}
+.c4{
+	color: #042A8F;
+	cursor: pointer;
+}
+.c5{
+	color: #008c8c;
+	border-radius: 0 0 8px 8px;
+}
+.mt10{
+	margin-top: 10px;
+}
+.mr0{
+	margin-right: 0px;
+}
+.mr10{
+	margin-right: 10px;
+}
+.bfc{
+	overflow: hidden;
+}
+
+.col-ccc{
+	color: #ccc !important;
+}
+.col-blue {
+	color: #2d98f3 !important;
+}
+.col-yellow {
+	color: #ffb400;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

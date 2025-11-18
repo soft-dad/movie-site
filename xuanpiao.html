@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>购买电影票 - 2号厅</title>
+    <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/index.css">
+    <link rel="stylesheet" href="./css/common.css">
+    <link rel="stylesheet" href="./css/xuanpiao.css">
+    <style>
+
+
+        /* 移动设备适配 */
+        @media (max-width: 768px) {
+            .dropdown-content {
+                position: static;
+                box-shadow: none;
+            }
+            .main-content {
+                flex-direction: column;
+            }
+            .order-section {
+                flex: 0 0 auto;
+                width: 100%;
+            }
+            .seat-list {
+                grid-template-columns: repeat(8, 32px);
+                gap: 8px;
+                padding: 16px;
+            }
+            .seat-item {
+                width: 32px;
+                height: 32px;
+                font-size: 11px;
+            }
+            .legend-container {
+                gap: 16px;
+                padding: 10px 16px;
+            }
+            .header .contain {
+                flex-wrap: wrap;
+            }
+            .header .serch-form,
+            .header .appdownload {
+                margin-top: 10px;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body class="day">
+<!-- 背景音乐播放器 -->
+<audio id="backgroundMusic" loop preload="auto">
+    <source src="./music/background_music.mp3" type="audio/mpeg">
+    您的浏览器不支持音频播放。
+</audio>
+<!-- 点击音效播放器 -->
+<audio id="clickSound" preload="auto">
+    <source src="./music/click.mp3" type="audio/mpeg">
+    您的浏览器不支持音频播放。
+
+   </audio>
+<!-- 音乐控制按钮：弱化设计，不抢焦点 -->
+<button id="musicToggle" class="music-control">
+    <span>🔊</span>
+    <span class="music-text">播放音乐</span>
+</button>
+
+<!-- 头部导航 -->
+<nav class="header" id="#">
+    <div class="contain">
+        <!-- logo区 -->
+        <a href="./index.html" class="logo"></a>
+        <!-- 列表 -->
+        <ul>
+            <li><a href="./index.html">首页</a></li>
+            <!-- 修改电影下拉菜单结构，增加专用类名 -->
+            <li class="dropdown movie-dropdown">
+                <a href="./movie.html" class="dropbtn">电影</a>
+                <div class="dropdown-content">
+                    <a href="./category_Action.html">动作片</a>
+                    <a href="./category_Comedy.html">喜剧片</a>
+                    <a href="./category_Romance.html">爱情片</a>
+                    <a href="./category_Sci-fic.html">科幻片</a>
+                </div>
+            </li>
+            <li><a href="./cinema.html">影院</a></li>
+            <li class="dropdown">
+                <a href="./liuyan.html" class="dropbtn">反馈</a>
+                <div class="dropdown-content">
+                    <a href="liuyan_tel.html">电话客服</a>
+                    <a href="liuyan.html">系统留言</a>
+                    <a href="liuyan_feedback.html">意见反馈</a>
+                    <a href="liuyan_about.html">关于我们</a>
+                </div>
+            </li>
+            <li><a href="./mall.html">商城</a></li>
+        </ul>
+        <!-- 用户登入 -->
+        <div class="userinfo">
+            <img src="./img/userifo.png" alt="用户">
+            <a href="./login.html" style="margin-left: 20px;">登录</a>
+        </div>
+        <!-- 搜索区 -->
+        <form action="#" class="serch-form" method="POST">
+            <input type="search" class="search" placeholder="找影视剧 影人 影院">
+            <input type="button" class="submit" value="">
+        </form>
+        <!-- app下载 -->
+        <div class="appdownload">
+            <a href="#">
+                <span class="iphone-icon"></span>
+                <span class="apptext">app下载</span>
+                <span class="caret"></span>
+                <div class="downloadicon">
+                    <p class="down-title">扫码下载app</p>
+                    <p class="down-content">选座更优惠</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="page-container">
+    <div class="main-content">
+        <!-- 左侧选座区域 -->
+        <div class="seat-section">
+            <!-- 银幕+品牌信息 -->
+            <div class="screen-container">
+                <br>
+                <br>
+                <br>
+                <br>
+                <div class="screen-title">2号厅 银幕</div>
+                <div class="screen-area">放映区域（请对号入座）</div>
+                <div class="best-view-tip">最佳观影区：B排 - C排</div>
+            </div>
+            <!-- 颜色图例 -->
+            <div class="legend-container">
+                <div class="legend-item">
+                    <div class="legend-color available"></div>
+                    <span>可选座位</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color selected"></div>
+                    <span>已选座位</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color sold"></div>
+                    <span>已售座位</span>
+                </div>
+            </div>
+            <!-- 座位列表 -->
+            <ul class="seat-list" id="seatList"></ul>
+        </div>
+        <!-- 右侧订单区域 -->
+        <div class="order-section">
+            <div class="order-card">
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <div class="order-header">订单信息</div>
+                <div class="order-body">
+                    <div class="order-info">
+                        <div class="info-row">
+                            <span class="info-label">影片</span>
+                            <span class="info-value">《冰雪奇缘2》</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">影厅</span>
+                            <span class="info-value">2号厅</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">时间</span>
+                            <span class="info-value">12月1日 21:00</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">票价</span>
+                            <span class="info-value">50元/张</span>
+                        </div>
+                    </div>
+                    <div class="order-divider"></div>
+                    <div class="order-info">
+                        <div class="info-row">
+                            <span class="info-label">已选座位</span>
+                            <span class="info-value seat-value" id="seatNumbers">未选择</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">票数</span>
+                            <span class="info-value" id="ticketCount">0张</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">总计</span>
+                            <span class="info-value price-value" id="totalPrice">¥0</span>
+                        </div>
+                    </div>
+                    <button class="buy-btn" id="buyTicket">确认购买</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<!-- 底部 -->
+<div class="footer">
+    <p>商务合作邮箱：v@longteng.com 客服电话：10105335 违法和不良信息举报电话：4006019900 </p>
+    <p>用户投诉邮箱：tousujubao@meituan.com 舞弊线索举报邮箱：wubijubao@longteng.com </p>
+    <p>
+        <a>中华人民共和国增值电信业务经营许可证 京B2-20190350 </a>
+        <span>|</span>
+        <a> 营业性演出许可证 京演（机构）（2024）4094号</a>
+    </p>
+    <p>
+        <a>广播电视节目制作经营许可证 （京）字第08478号 </a>
+        <span>|</span>
+        <a> 网络文化经营许可证 京网文（2024）3837-369号</a>
+    </p>
+    <p>
+        <a>用户服务协议 </a>
+        <span>|</span>
+        <a> 平台交易规则总则</a>
+        <span>|</span>
+        <a>隐私政策</a>
+    </p>
+    <p><a>京公网安备 11010102003232号</a></p>
+    <p>文化传媒有限公司</p>
+    <p>©2024 电影 longteng.com</p>
+    <p class="last">
+        <a><img src="./img/network.png" alt=""></a>
+        <a><img src="./img/license.png" alt=""></a>
+    </p>
+</div>
+
+<script>
+    // 1. DOM元素获取
+    const backgroundMusic = document.getElementById('backgroundMusic');
+    const clickSound = document.getElementById('clickSound');
+    const musicToggle = document.getElementById('musicToggle');
+    const musicText = musicToggle.querySelector('.music-text');
+    const buyButton = document.getElementById('buyTicket');
+    const seatNumbers = document.getElementById('seatNumbers');
+    const ticketCount = document.getElementById('ticketCount');
+    const totalPrice = document.getElementById('totalPrice');
+    const seatList = document.getElementById('seatList');
+    const homeLink = document.getElementById('homeLink');
+
+    // 2. 音乐控制：优化交互反馈
+    function initMusic() {
+        const isPlaying = localStorage.getItem('musicPlaying') === 'true';
+        const currentTime = parseFloat(localStorage.getItem('musicTime') || 0);
+
+        // 恢复播放状态
+        if (currentTime > 0 && !isNaN(currentTime)) {
+            backgroundMusic.currentTime = currentTime;
+        }
+        if (isPlaying) {
+            backgroundMusic.play().then(() => {
+                musicToggle.querySelector('span').textContent = '🔇';
+                musicText.textContent = '关闭音乐';
+            }).catch(err => {
+                console.log('音乐自动播放失败，需要用户交互:', err);
+                musicToggle.querySelector('span').textContent = '🔊';
+                musicText.textContent = '播放音乐';
+            });
+        }
+
+        // 音乐控制按钮事件
+        musicToggle.addEventListener('click', () => {
+            if (backgroundMusic.paused) {
+                backgroundMusic.play().then(() => {
+                    musicToggle.querySelector('span').textContent = '🔇';
+                    musicText.textContent = '关闭音乐';
+                    localStorage.setItem('musicPlaying', 'true');
+                }).catch(error => {
+                    console.log("音乐播放失败，需要用户交互:", error);
+                    musicToggle.querySelector('span').textContent = '🔊';
+                    musicText.textContent = '请点击我播放音乐';
+                });
+            } else {
+                backgroundMusic.pause();
+                musicToggle.querySelector('span').textContent = '🔊';
+                musicText.textContent = '播放音乐';
+                localStorage.setItem('musicPlaying', 'false');
+            }
+        });
+
+        // 定时保存播放进度
+        setInterval(() => {
+            if (!backgroundMusic.paused) {
+                localStorage.setItem('musicTime', backgroundMusic.currentTime.toString());
+            }
+        }, 1000);
+    }
+
+    // 3. 全局点击音效
+    function playClickSound() {
+        try {
+            // 每次播放前重置音频位置，避免连续点击音效叠加
+            clickSound.currentTime = 0;
+            // 播放音效，捕获浏览器策略限制错误
+            clickSound.play().catch(error => {
+                if (error.name === 'NotAllowedError') {
+                    console.log("首次点击需先激活页面（浏览器自动播放策略限制），再次点击即可正常播放");
+                } else {
+                    console.log("点击音效播放异常:", error);
+                }
+            });
+        } catch (e) {
+            console.log("音效文件加载异常:", e);
+        }
+    }
+
+    // 全局绑定点击音效（覆盖所有元素，包括动态元素）
+    function initGlobalClickSound() {
+        // 方式1：给document绑定mousedown事件（底层事件，不被元素拦截）
+        document.addEventListener('mousedown', playClickSound, { capture: true });
+
+        // 方式2：监听动态添加的元素（防止分页加载等场景遗漏）
+        const observer = new MutationObserver(mutations => {
+            mutations.forEach(mutation => {
+                mutation.addedNodes.forEach(node => {
+                    // 仅对HTML元素节点绑定事件
+                    if (node.nodeType === 1) {
+                        node.addEventListener('mousedown', playClickSound, { capture: true });
+                    }
+                });
+            });
+        });
+        // 监听body下所有元素变化（包括子树）
+        observer.observe(document.body, { childList: true, subtree: true });
+    }
+
+    // 4. 初始化下拉菜单交互
+    function initDropdownMenu() {
+        const movieDropdown = document.querySelector('.movie-dropdown');
+        const dropbtn = document.querySelector('.movie-dropdown .dropbtn');
+        const dropdownContent = document.querySelector('.movie-dropdown .dropdown-content');
+        
+        if (movieDropdown && dropbtn && dropdownContent) {
+            // 为下拉菜单项添加点击事件，确保跳转正常
+            const dropdownItems = dropdownContent.querySelectorAll('a');
+            dropdownItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    // 播放音效后跳转
+                    playClickSound().then(() => {
+                        window.location.href = this.getAttribute('href');
+                    });
+                });
+            });
+            
+            // 移动设备点击处理
+            dropbtn.addEventListener('click', function(e) {
+                if (window.innerWidth < 768) {
+                    e.preventDefault();
+                    dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+                }
+            });
+            
+            // 点击其他区域关闭菜单
+            document.addEventListener('click', function(e) {
+                if (!movieDropdown.contains(e.target)) {
+                    dropdownContent.style.display = 'none';
+                }
+            });
+        }
+    }
+
+    // 5. 座位初始化：优化最佳观影区标识
+    function initSeats() {
+        const selectedSeats = [];
+        const bestViewRows = ['B', 'C']; // 最佳观影区行
+        const rowCount = 5; // 总行数
+        const colCount = 10; // 总列数
+
+        // 生成座位
+        for (let row = 0; row < rowCount; row++) {
+            const rowLabel = String.fromCharCode(65 + row); // A-E排
+            for (let col = 1; col <= colCount; col++) {
+                const seatItem = document.createElement('li');
+                seatItem.className = 'seat-item available';
+                seatItem.textContent = rowLabel + col;
+                seatItem.dataset.seat = rowLabel + col;
+
+                // 标记最佳观影区座位
+                if (bestViewRows.includes(rowLabel)) {
+                    seatItem.classList.add('best-view');
+                    seatItem.title = '最佳观影区';
+                }
+
+                // 随机生成30%已售座位（模拟真实场景）
+                if (Math.random() < 0.3) {
+                    seatItem.classList.remove('available');
+                    seatItem.classList.add('sold');
+                } else {
+                    // 可选座位交互
+                    seatItem.addEventListener('click', () => {
+                        // 播放点击音效
+                        playClickSound();
+
+                        // 切换选中状态
+                        seatItem.classList.toggle('selected');
+                        const seatId = seatItem.dataset.seat;
+
+                        // 更新选中列表
+                        if (seatItem.classList.contains('selected')) {
+                            selectedSeats.push(seatId);
+                        } else {
+                            const index = selectedSeats.indexOf(seatId);
+                            if (index > -1) {
+                                selectedSeats.splice(index, 1);
+                            }
+                        }
+
+                        // 更新订单信息
+                        updateOrderInfo(selectedSeats);
+                    });
+                }
+
+                seatList.appendChild(seatItem);
+            }
+        }
+    }
+
+    // 6. 更新订单信息：优化显示逻辑
+    function updateOrderInfo(seats) {
+        // 座位显示：超过5个时省略（移动端优化）
+        const seatText = seats.length > 0
+            ? (seats.length > 5 ? `${seats.slice(0, 5).join(', ')}...` : seats.join(', '))
+            : '未选择';
+        seatNumbers.textContent = seatText;
+
+        // 票数/总价更新
+        const ticketNum = seats.length;
+        ticketCount.textContent = `${ticketNum}张`;
+        totalPrice.textContent = `¥${ticketNum * 50}`;
+
+        // 按钮状态：无选中时禁用
+        buyButton.disabled = ticketNum === 0;
+    }
+
+    // 7. 购票逻辑：优化弹窗体验
+    function initPurchase() {
+        buyButton.addEventListener('click', () => {
+            const seats = seatNumbers.textContent;
+            if (seats === '未选择' || seats === '') {
+                alert('请先选择座位再购票哦～');
+                return;
+            }
+
+            // 播放确认音效
+            playClickSound();
+
+            // 购票成功弹窗（清晰分区）
+            const successMsg = `
+购票成功！🎉
+【影片信息】
+影片：《冰雪奇缘2》
+影厅：2号厅
+时间：12月1日 21:00
+【订单详情】
+座位：${seatNumbers.textContent}
+票数：${ticketCount.textContent}
+总价：${totalPrice.textContent}
+【取票提示】
+请凭取票码在影院自助机取票
+开场前30分钟到厅即可～
+                `;
+            alert(successMsg);
+
+            // 重置状态：清空选中+更新订单
+            const selectedSeats = document.querySelectorAll('.seat-item.selected');
+            selectedSeats.forEach(seat => seat.classList.remove('selected'));
+            updateOrderInfo([]);
+        });
+    }
+
+    // 8. 首页链接跳转处理（保持音乐状态）
+    function initHomeLink() {
+        homeLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            // 保存当前音乐状态后跳转
+            localStorage.setItem('musicPlaying', backgroundMusic.paused ? 'false' : 'true');
+            localStorage.setItem('musicTime', backgroundMusic.currentTime.toString());
+            window.location.href = './index.html';
+        });
+    }
+
+    // 9. 页面加载完成后统一初始化
+    document.addEventListener('DOMContentLoaded', function() {
+        initMusic();              // 初始化背景音乐
+        initGlobalClickSound();   // 初始化全局点击音效
+        initDropdownMenu();       // 初始化下拉菜单
+        initSeats();              // 初始化座位选择
+        initPurchase();           // 初始化购票功能
+        initHomeLink();           // 初始化首页跳转
+        buyButton.disabled = true;// 初始禁用购票按钮
+    });
+</script>
+<script src="js/index.js"></script>
+<script src="js/daojishi.js"></script>
+</body>
+</html>
+    

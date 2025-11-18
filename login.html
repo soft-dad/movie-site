@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/login.css">
+    <link rel="stylesheet" href="./css/index.css">
+    <link rel="stylesheet" href="./css/common.css">
+    <title>登录</title>
+</head>
+
+<body>
+<!-- 背景音乐播放器 -->
+<audio id="backgroundMusic" loop>
+  <source src="./music/background_music.mp3" type="audio/mpeg">
+  您的浏览器不支持音频播放。
+</audio>
+
+<!-- 点击音效播放器（提前加载，确保无延迟） -->
+<audio id="clickSound" preload="auto">
+  <source src="./music/click.mp3" type="audio/mpeg">
+  您的浏览器不支持音频播放。
+</audio>
+
+<!-- 音乐控制按钮 -->
+<button id="musicToggle" style="
+    position: fixed; top: 100px; right: 20px; z-index: 1000;
+    padding: 10px; cursor: pointer; background-color: rgba(0,0,0,0.5);
+    color: white; border: none; border-radius: 5px;
+">
+  🔊 播放音乐
+</button>
+
+<script>
+  // 1. 集中获取所有核心元素
+  const music = document.getElementById('backgroundMusic');
+  const toggleButton = document.getElementById('musicToggle');
+  const clickSound = document.getElementById('clickSound');
+
+  // 2. 背景音乐状态检查函数
+  function checkMusicStatus() {
+    const isPlaying = localStorage.getItem('musicPlaying') === 'true';
+    if (isPlaying) {
+      music.play().then(() => {
+        toggleButton.textContent = '🔇 关闭音乐';
+      }).catch(error => {
+        console.log("页面切换时自动播放失败，需要用户交互:", error);
+        localStorage.setItem('musicPlaying', 'false');
+        toggleButton.textContent = '🔊 播放音乐';
+      });
+    } else {
+      toggleButton.textContent = '🔊 播放音乐';
+    }
+  }
+
+  // 3. 背景音乐控制函数
+  function toggleMusic() {
+    if (music.paused) {
+      music.play().then(() => {
+        toggleButton.textContent = '🔇 关闭音乐';
+        localStorage.setItem('musicPlaying', 'true');
+      }).catch(error => {
+        console.log("音乐播放失败，需要用户交互:", error);
+        toggleButton.textContent = '🔊 请点击我播放音乐';
+      });
+    } else {
+      music.pause();
+      toggleButton.textContent = '🔊 播放音乐';
+      localStorage.setItem('musicPlaying', 'false');
+    }
+  }
+
+  // 4. 点击音效播放函数（增加错误捕获，确保稳定）
+  function playClickSound() {
+    try {
+      // 每次播放前重置音频位置，避免连续点击音效叠加
+      clickSound.currentTime = 0;
+      // 播放音效，捕获浏览器策略限制错误
+      clickSound.play().catch(error => {
+        if (error.name === 'NotAllowedError') {
+          console.log("首次点击需先激活页面（浏览器自动播放策略限制），再次点击即可正常播放");
+        } else {
+          console.log("点击音效播放异常:", error);
+        }
+      });
+    } catch (e) {
+      console.log("音效文件加载异常:", e);
+    }
+  }
+
+  // 5. 全局绑定点击音效（覆盖所有元素，包括动态元素）
+  function initGlobalClickSound() {
+    // 方式1：给document绑定mousedown事件（底层事件，不被元素拦截）
+    document.addEventListener('mousedown', playClickSound, { capture: true });
+
+    // 方式2：监听动态添加的元素（防止分页加载等场景遗漏）
+    const observer = new MutationObserver(mutations => {
+      mutations.forEach(mutation => {
+        mutation.addedNodes.forEach(node => {
+          // 仅对HTML元素节点绑定事件
+          if (node.nodeType === 1) {
+            node.addEventListener('mousedown', playClickSound, { capture: true });
+          }
+        });
+      });
+    });
+    // 监听body下所有元素变化（包括子树）
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+
+  // 6. 页面加载完成后统一初始化（避免重复绑定）
+  document.addEventListener('DOMContentLoaded', function() {
+    checkMusicStatus();          // 初始化背景音乐
+    toggleButton.addEventListener('click', toggleMusic); // 绑定音乐控制按钮
+    initGlobalClickSound();      // 初始化全局点击音效
+  });
+</script>
+<!-- 头部导航 -->
+<nav class="header">
+    <div class="contain">
+        <!-- logo区 -->
+        <a href="#" class="logo"></a>
+        <!-- 列表 -->
+        <ul>
+            <li><a href="#" id="homeLink">首页</a></li>
+            <!-- 修改电影下拉菜单结构，增加专用类名 -->
+            <li class="dropdown movie-dropdown">
+                <a href="./movie.html" class="dropbtn">电影</a>
+                <div class="dropdown-content">
+                    <a href="./category_Action.html">动作片</a>
+                    <a href="./category_Comedy.html">喜剧片</a>
+                    <a href="./category_Romance.html">爱情片</a>
+                    <a href="./category_Sci-fic.html">科幻片</a>
+                </div>
+            </li>
+            <li><a href="./cinema.html">影院</a></li> <!-- 修正"演院"为"影院" -->
+            <li class="dropdown">
+                <a href="./liuyan.html" class="dropbtn">反馈</a>
+                <div class="dropdown-content">
+                    <a href="liuyan_tel.html">电话客服</a>
+                    <a href="liuyan.html">系统留言</a>
+                    <a href="liuyan_feedback.html">意见反馈</a>
+                    <a href="liuyan_about.html">关于我们</a>
+                </div>
+            </li>
+            <li><a href="./mall.html">商城</a></li>
+        </ul>
+        <!-- 用户登入 -->
+        <div class="userinfo">
+            <img src="./img/userifo.png" alt="用户">
+            <a href="./login.html" style="margin-left: 20px;">登录</a>
+        </div>
+        <!-- 搜索区 -->
+        <form action="#" class="serch-form" method="POST">
+            <input type="search" class="search" placeholder="找影视剧 影人 影院">
+            <input type="button" class="submit" value="">
+        </form>
+        <!-- app下载 -->
+        <div class="appdownload">
+            <a href="#">
+                <span class="iphone-icon"></span>
+                <span class="apptext">app下载</span>
+                <span class="caret"></span>
+                <div class="downloadicon">
+                    <p class="down-title">扫码下载app</p>
+                    <p class="down-content">选座更优惠</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<br>
+<br>
+<br>
+<br>
+    <!-- 登录的logo区域 -->
+    <div class="site-logo"></div>
+    <!-- 登录的主体区域 -->
+    <div class="login-body clearfix">
+        <div class="login-img fl">
+            <img src="./img/loginimg.png" alt="电影">
+        </div>
+        <div class="login-form fr">
+            <form action="#" method="POST" class="form-stack" id="loginForm">
+                <p>
+                    账号登录<span class="fr">手机动态码登录</span>
+                </p>
+                <div class="phone-input-wrapper">
+                    <span class="country-area">
+                        <span class="plus">+</span>
+                        <span>86&nbsp;&gt;</span>
+                    </span>
+                    <input type="text" name="email" id="login-email" placeholder="手机号" maxlength="15">
+                </div>
+                <div class="phone-input-password">
+                    <i class="icon-passwword"></i>
+                    <input type="password" name="password" id="login-password" placeholder="密码" maxlength="15"
+                        oninput="checkPasswordStrength()">
+                    <span id="password-strength" class="password-strength"></span> <!-- 添加的密码强度提示元素 -->
+                </div>
+                <div class="forgetpassword">
+                    <a href="#">忘记密码?</a>
+                </div>
+                <input type="submit" class="loginin" value="登录">
+                <p class="signup-guide">
+                    还没有账号?
+                    <a href="#">点击注册</a>
+                </p>
+            </form>
+        </div>
+    </div>
+    <script src="./js/login.js" type="text/javascript"></script>
+</body>
+
+</html>

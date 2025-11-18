@@ -1,0 +1,221 @@
+body {
+    color: #333;
+}
+
+
+.pager{
+    margin: 2em 0;
+    text-align: center;
+}
+
+.pager a{
+    border: 1px solid #d8d8d8;
+    padding: 5px 10px;
+    margin: 0 3px;
+}
+.pager a:hover{
+    border-color: #042A8F;
+}
+
+.pager a.select{
+    background: #042A8F;
+    color:#fff;
+    border: none;
+}
+
+
+
+.clearfix::after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+.main {
+    line-height: 1.5;
+    margin-top: 81px;
+}
+
+.main .nav {
+    height: 60px;
+    background: #47464a;
+    color: #fff;
+    text-align: center;
+    line-height: 60px;
+}
+
+.tab {
+    /* 选项卡样式 */
+    padding: 10px 20px;
+    cursor: pointer;
+    /* 其他样式 */
+}
+
+.tab.active {
+    /* 活动选项卡的样式，例如背景颜色 */
+    background-color: #8aa6f3;
+}
+
+.tab-content {
+    /* 初始隐藏内容区域 */
+    display: none;
+}
+
+.tab-content.active {
+    /* 显示活动的内容区域 */
+    display: block;
+}
+
+.container .active{
+    display: block;
+}
+
+.main .nav a {
+    margin: 0 38px;
+    color: #fff;
+}
+
+.main .nav a:hover {
+    color: #042A8F;;
+}
+
+.main .nav a.select {
+    color: #042A8F;
+}
+
+.main .container {
+    width: 1120px;
+    margin: 0 auto;
+}
+
+.main .container .choose-area {
+    border: 1px solid #e5e5e5;
+    margin: 40px 0;
+    font-size: 14px;
+    line-height: 30px;
+    padding: 0 30px;
+}
+
+.main .container .choose-area .choose-item {
+    margin: 1em 0;
+    border-bottom: 1px dotted #e5e5e5;
+}
+
+.main .container .choose-area .choose-item.no-line {
+    border: none;
+}
+
+.main .container .choose-area .choose-item .left {
+    float: left;
+    color: #999;
+}
+
+.main .container .choose-area .choose-item .right {
+    float: left;
+    width: 1010px;
+}
+
+.main .container .choose-area .choose-item .right li {
+    float: left;
+    margin: 0 9px;
+    padding: 0 6px;
+}
+
+.main .container .choose-area .choose-item .right li a:hover {
+    color: #042A8F;
+}
+
+.main .container .choose-area .choose-item .right li.select {
+    background: #8aa6f3;
+    color: #fff;
+    /* CSS3 圆角边框 */
+    border-radius: 15px;
+}
+
+.main .container .movies .sort li {
+    float: left;
+    height: 18px;
+    line-height: 18px;
+    margin: 0 35px 10px 0px;
+}
+
+.main .container .movies .sort li .sort-red {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+    cursor: pointer;
+    background: url("../img/sort-red.png") no-repeat;
+}
+
+.main .container .movies .sort li .sort-white {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+    cursor: pointer;
+    background: url("../img/sort-white.png") no-repeat;
+}
+.main .container .movies .movie-item {
+    position: relative;
+    float: left;
+    width: 160px;
+    margin: 10px 32px 10px 0;
+}
+
+.main .container .movies .movie-item:nth-child(6n){
+    margin-right: 0;
+}
+
+.main .container .movies .movie-item .poster img{
+    width: 160px;
+    height: 220px;
+}
+
+.main .container .movies .movie-item .name{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 2px;
+    text-align: center;
+}
+.main .container .movies .movie-item .buy-ticket{
+    position: absolute;
+    right: 5px;
+    bottom: 88px;
+    padding: 0 3px;
+    height: 18px;
+    line-height: 18px;
+    border-radius: 1px;
+    color: #fff;
+    font-size: 12px;
+    background-color: #042A8F;
+}
+
+.main .container .movies .movie-item .d2max{
+    width: 69px;
+    height: 25px;
+    position: absolute;
+    top: 4px;
+    left: -2px;
+    background: url("../img/2dmax.png");
+}
+
+.main .container .movies .movie-item .d3max{
+    width: 69px;
+    height: 25px;
+    position: absolute;
+    top: 4px;
+    left: -2px;
+    background: url("../img/3dmax.png");
+}
+.main .container .movies .movie-item .score{
+    color:#ffb400;
+    text-align: center;
+    line-height: 2.5;
+    font-style: italic;
+}
+
+.main .container .movies .movie-item .score::first-letter{
+    font-size: 1.5em;
+}
